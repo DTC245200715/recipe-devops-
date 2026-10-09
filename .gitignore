@@ -1,0 +1,32 @@
+﻿# Docker Desktop data - DO NOT COMMIT
+/DockerDesktopWSL/
+
+# Secrets and environment variables
+.env
+.env.*
+!.env.example
+
+# Private TLS certificates and keys
+/nginx/certs/*
+!/nginx/certs/.gitkeep
+*.key
+*.pem
+
+# Logs and temporary files
+*.log
+logs/
+tmp/
+temp/
+
+# Operating system and editor files
+Thumbs.db
+.DS_Store
+.vscode/
+.idea/
+
+# Temporary Microsoft Office files
+~$*
+
+# Python cache, if used by tools
+__pycache__/
+*.pyc
