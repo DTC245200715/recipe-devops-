@@ -18,7 +18,9 @@
           "color": {
             "mode": "palette-classic"
           },
-          "unit": "percentunit"
+          "unit": "percent",
+          "min": 0,
+          "max": 100
         },
         "overrides": []
       },
@@ -30,8 +32,8 @@
       },
       "targets": [
         {
-          "expr": "100 * (1 - avg(node_memory_MemAvailable_bytes{job=\"node-exporter\"}) / avg(node_memory_MemTotal_bytes{job=\"node-exporter\"}))",
-          "legendFormat": "Memory usage",
+          "expr": "100 * (1 - (node_memory_MemAvailable_bytes{job=\"node-exporter\"} / node_memory_MemTotal_bytes{job=\"node-exporter\"}))",
+          "legendFormat": "Memory usage (%)",
           "refId": "A"
         }
       ],
@@ -48,7 +50,9 @@
           "color": {
             "mode": "palette-classic"
           },
-          "unit": "percentunit"
+          "unit": "percent",
+          "min": 0,
+          "max": 100
         },
         "overrides": []
       },
@@ -60,8 +64,8 @@
       },
       "targets": [
         {
-          "expr": "100 * (avg(rate(node_cpu_seconds_total{mode=\"idle\",job=\"node-exporter\"}[5m])) < 1)",
-          "legendFormat": "CPU usage",
+          "expr": "100 - (avg(rate(node_cpu_seconds_total{mode=\"idle\",job=\"node-exporter\"}[1m])) * 100)",
+          "legendFormat": "CPU usage (%)",
           "refId": "A"
         }
       ],
@@ -77,28 +81,59 @@
         "defaults": {
           "color": {
             "mode": "palette-classic"
-          }
+          },
+          "unit": "reqps"
         },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
       "id": 3,
       "options": {
         "legend": { "displayMode": "list", "placement": "bottom" },
-        "tooltip": { "mode": "multi", "sort": "desc" }
+        "tooltip": { "mode": "single", "sort": "none" }
       },
       "targets": [
         {
-          "expr": "rate(nginx_http_requests_total{job=\"nginx-exporter\"}[5m])",
-          "legendFormat": "HTTP requests",
+          "expr": "rate(nginx_http_requests_total{job=\"nginx\"}[1m])",
+          "legendFormat": "HTTP Requests/sec",
           "refId": "A"
         }
       ],
       "title": "HTTP requests per second",
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "qps"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "id": 4,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "targets": [
+        {
+          "expr": "rate(mysql_global_status_queries{job=\"mysql\"}[1m])",
+          "legendFormat": "MySQL Queries/sec",
+          "refId": "A"
+        }
+      ],
+      "title": "MySQL queries per second",
+      "type": "timeseries"
     }
   ],
-  "refresh": "10s",
+  "refresh": "5s",
   "schemaVersion": 39,
   "style": "dark",
   "tags": ["recipe", "monitoring"],
@@ -106,13 +141,13 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Recipe system overview",
   "uid": "recipe-overview",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
