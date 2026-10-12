@@ -1,39 +1,163 @@
-# Triển Khai Hệ Thống Website Công Thức Nấu Ăn (Recipe)
+# Bếp Ngon - Recipe Sharing Website
 
-## 1. Giới thiệu
-Đây là dự án triển khai hệ thống quản trị nội dung website chia sẻ công thức nấu ăn sử dụng WordPress, MySQL, Nginx, cùng các công cụ giám sát Prometheus, Grafana, Loki và Promtail thông qua Docker Compose.
+Website chia sẻ công thức nấu ăn được triển khai theo kiến trúc Docker Compose, gồm PHP, MySQL, Nginx, phpMyAdmin và các dịch vụ giám sát/logging theo yêu cầu của đề tài.
+
+## 1. Kiến trúc hệ thống
+
+- Backend: PHP 8.2 FPM, PDO + prepared statements
+- Reverse proxy: Nginx (HTTP/HTTPS redirect, TLS tự ký, security headers)
+- Database: MySQL 8.0 + dữ liệu mẫu trong `db/init.sql`
+- DBA tool: phpMyAdmin
+- Monitoring: Prometheus + Grafana + Node Exporter + cAdvisor + mysqld_exporter + nginx_exporter
+- Logging: Loki + Promtail
+- Hardening: container non-root, network isolation, security headers, quyền hạn tối thiểu
+- UI/UX: Sử dụng thống nhất bộ phông chữ **Poppins** của Google Fonts và bộ icon FontAwesome để mang lại giao diện hiện đại, đồng bộ trên toàn bộ website.
 
 ## 2. Cấu trúc thư mục
-- `app/`: Thư mục mã nguồn WordPress.
-- `database/`: Thư mục chứa dữ liệu MySQL.
-- `nginx/`: Cấu hình Nginx (reverse proxy, security headers).
-- `prometheus/`: Cấu hình Prometheus thu thập metrics.
-- `grafana/`: Cấu hình datasources và dashboards.
-- `loki/`, `promtail/`: Cấu hình hệ thống logging tập trung.
-- `docker-compose.yml`: File cấu hình toàn bộ dịch vụ.
-- `.env`: File chứa các biến môi trường (mật khẩu, tên database...).
 
-## 3. Hướng dẫn khởi chạy
+```text
+recipe-devops/
+├── docker-compose.yml
+├── .env
+├── .env.example
+├── README.md
+├── app/
+│   ├── Dockerfile
+│   ├── public/
+│   │   ├── index.php
+│   │   ├── admin.php
+│   │   ├── edit.php
+│   │   ├── recipe.php
+│   │   ├── login.php
+│   │   ├── logout.php
+│   │   ├── health.php
+│   │   └── css/
+│   │       └── style.css
+│   └── src/
+│       └── db.php
+├── db/
+│   └── init.sql
+├── nginx/
+│   ├── certs/
+│   └── conf.d/
+│       └── default.conf
+├── grafana/
+│   ├── dashboards/
+│   │   └── recipe-overview.json
+│   └── provisioning/
+│       ├── dashboards/
+│       │   └── dashboard.yml
+│       └── datasources/
+│           └── datasource.yml
+├── loki/
+│   └── local-config.yaml
+├── mysql-exporter/
+│   └── .my.cnf
+├── prometheus/
+│   └── prometheus.yml
+├── promtail/
+│   └── config.yml
+└── .gitignore
+```
 
-1. Yêu cầu cài đặt Docker và Docker Compose.
-2. Đảm bảo file `.env` đã được cấu hình các biến môi trường.
-3. Khởi chạy toàn bộ hệ thống với lệnh:
-   ```bash
-   docker-compose up -d
-   ```
-4. Truy cập các dịch vụ:
-   - Website chính: `http://localhost`
-   - phpMyAdmin: `http://localhost:8080`
-   - Grafana: `http://localhost:3000` (User: admin / Pass: như trong `.env`)
-   - Prometheus: `http://localhost:9090`
+## 3. Cách chạy dự án
 
-## 4. Các tính năng bảo mật (Hardening)
-- Chạy các dịch vụ Nginx, Prometheus, Grafana với quyền non-root (khai báo user trong compose hoặc qua image mặc định của nhà phát hành).
-- Network Isolation: Tách biệt frontend và backend networks (cơ sở dữ liệu chỉ kết nối backend).
-- Security headers trên Nginx.
-- Mật khẩu thiết lập qua `.env` (không hardcode).
+1. Tạo file `.env` nếu chưa có:
 
-## 5. Demo LogQL
-Vào Grafana -> Explore, chọn Datasource Loki và truy vấn:
-- Xem log Nginx: `{container="recipe_nginx"}`
-- Đếm số lượng log lỗi (nếu có): `sum(rate({container="recipe_nginx"} |= "error" [5m]))`
+```bash
+cp .env.example .env
+```
+
+2. Khởi động toàn bộ stack:
+
+```bash
+docker compose up -d --build
+```
+
+3. Chờ 30-60 giây cho MySQL và các dịch vụ monitoring hoàn tất khởi tạo.
+
+4. Kiểm tra trạng thái:
+
+```bash
+docker compose ps
+```
+
+## 4. Thông tin truy cập
+
+- Website: https://localhost
+- Website (HTTP redirect): http://localhost
+- Admin: https://localhost/admin.php
+  - Username: `thang`
+  - Password: `thang123`
+- phpMyAdmin: http://localhost:8080
+  - Host: `db`
+  - User: `thang` hoặc `recipe_user`
+  - Password: `thang-dtc245200715` hoặc lưu trong `.env`
+- Prometheus: http://localhost:9090
+- Grafana: http://localhost:3000
+  - User: `thang`
+  - Password: `thang-dtc245200715`
+- Loki: http://localhost:3100
+- Healthcheck: https://localhost/health.php
+
+## 5. Hardening và bảo mật
+
+- Container PHP chạy với user non-root (`appuser`)
+- Backend network là `internal`, chỉ các service cần thiết mới truy cập vào DB và app
+- Nginx bật HTTPS với chứng chỉ self-signed và các security headers:
+  - X-Frame-Options
+  - X-Content-Type-Options
+  - Referrer-Policy
+  - Content-Security-Policy
+  - Permissions-Policy
+- Tắt `server_tokens` và giới hạn quyền trong cấu hình Nginx
+- Dùng password mạnh cho DB, Grafana và MySQL exporter
+
+## 6. Monitoring & Logging
+
+### Prometheus / Grafana
+
+- Prometheus scrape các mục tiêu sau:
+  - cAdvisor
+  - Node Exporter
+  - MySQL Exporter
+  - Nginx Exporter
+  - chính Prometheus self-monitoring
+- Dashboard mặc định: `Recipe system overview`
+
+### Loki / Promtail
+
+Promtail theo dõi log container thông qua Docker socket, sau đó đẩy lên Loki.
+
+Ví dụ truy vấn LogQL cơ bản:
+
+```logql
+{container="recipe_web"} |= "User login"
+```
+
+```logql
+{container=~"recipe_.*"} |= "ERROR"
+```
+
+```logql
+{container="recipe_nginx"} |= "401" or "403"
+```
+
+## 7. Log và kiểm tra nhanh
+
+```bash
+docker compose logs -f web
+
+docker compose logs -f nginx
+
+docker compose logs -f promtail
+```
+
+## 8. Gỡ cài đặt
+
+```bash
+docker compose down -v
+```
+
+Lưu ý: câu lệnh trên sẽ xóa cả volume database và dữ liệu giám sát.
+

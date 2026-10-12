@@ -1,163 +1,115 @@
 version: '3.8'
 
 services:
-  # ---------------------------------------------------------
-  # 1. APP & DATABASE
-  # ---------------------------------------------------------
-  db:
-    image: mysql:8.0
-    container_name: recipe_mysql
+  web:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: recipe_web
     restart: unless-stopped
-    env_file: .env
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    volumes:
-      - ./database/data:/var/lib/mysql
-    networks:
-      - backend-network
-    security_opt:
-      - no-new-privileges:true
-    # Hardening: Run as a specific user if possible, but mysql typically needs to start as root to chown then drops privileges.
-
-  wordpress:
-    image: wordpress:latest
-    container_name: recipe_wordpress
-    restart: unless-stopped
-    env_file: .env
-    environment:
-      WORDPRESS_DB_HOST: db:3306
-      WORDPRESS_DB_USER: ${MYSQL_USER}
-      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
-      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+    env_file:
+      - .env
     volumes:
       - ./app:/var/www/html
     networks:
-      - backend-network
-      - frontend-network
+      - backend
     depends_on:
-      - db
-    security_opt:
-      - no-new-privileges:true
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "9000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: recipe_phpmyadmin
-    restart: unless-stopped
-    ports:
-      - "8080:80"
-    environment:
-      PMA_HOST: db
-      PMA_PORT: 3306
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-    networks:
-      - frontend-network
-      - backend-network
-    depends_on:
-      - db
-
-  # ---------------------------------------------------------
-  # 2. REVERSE PROXY (Nginx)
-  # ---------------------------------------------------------
   nginx:
-    image: nginx:alpine
+    image: nginx:1.25-alpine
     container_name: recipe_nginx
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "8000:80"
       - "443:443"
     volumes:
       - ./app:/var/www/html
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/certs:/etc/nginx/certs
     networks:
-      - frontend-network
+      - frontend
+      - backend
     depends_on:
-      - wordpress
-    security_opt:
-      - no-new-privileges:true
+      - web
 
-  # ---------------------------------------------------------
-  # 3. MONITORING (Prometheus + Grafana + Exporters)
-  # ---------------------------------------------------------
+  db:
+    image: mysql:8.0
+    container_name: recipe_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.2
+    container_name: recipe_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "8080:80"
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      db:
+        condition: service_healthy
+
+
   prometheus:
     image: prom/prometheus:latest
     container_name: recipe_prometheus
     restart: unless-stopped
+    ports:
+      - "9090:9090"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./prometheus/data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
+      - prometheus_data:/prometheus
     networks:
-      - monitoring-network
-      - frontend-network # To monitor nginx
-      - backend-network  # To monitor db via exporter
-    user: "65534:65534" # nobody
+      - frontend
+      - backend
 
   grafana:
-    image: grafana/grafana-oss:latest
+    image: grafana/grafana:latest
     container_name: recipe_grafana
     restart: unless-stopped
     ports:
       - "3000:3000"
-    volumes:
-      - ./grafana/data:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/etc/grafana/dashboards
+      - grafana_data:/var/lib/grafana
     networks:
-      - monitoring-network
-      - frontend-network
+      - frontend
+      - backend
     depends_on:
       - prometheus
-    user: "472:472"
+      - loki
 
-  mysql-exporter:
-    image: prom/mysqld-exporter
-    container_name: recipe_mysqld_exporter
-    restart: unless-stopped
-    environment:
-      DATA_SOURCE_NAME: "${MYSQL_USER}:${MYSQL_PASSWORD}@(db:3306)/"
-    networks:
-      - backend-network
-      - monitoring-network
-    depends_on:
-      - db
-
-  nginx-exporter:
-    image: nginx/nginx-prometheus-exporter:latest
-    container_name: recipe_nginx_exporter
-    restart: unless-stopped
-    command:
-      - -nginx.scrape-uri=http://nginx/stub_status
-    networks:
-      - frontend-network
-      - monitoring-network
-    depends_on:
-      - nginx
-
-  # cadvisor (requires root / privileged in many setups, but useful for container metrics)
-  cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
-    container_name: recipe_cadvisor
-    restart: unless-stopped
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-      - /dev/disk/:/dev/disk:ro
-    networks:
-      - monitoring-network
-    privileged: true
-
-  # ---------------------------------------------------------
-  # 4. LOGGING (Loki + Promtail)
-  # ---------------------------------------------------------
   loki:
     image: grafana/loki:latest
     container_name: recipe_loki
@@ -168,27 +120,89 @@ services:
       - ./loki/local-config.yaml:/etc/loki/local-config.yaml
     command: -config.file=/etc/loki/local-config.yaml
     networks:
-      - monitoring-network
+      - frontend
+      - backend
 
   promtail:
     image: grafana/promtail:latest
     container_name: recipe_promtail
     restart: unless-stopped
     volumes:
-      - ./promtail/config.yml:/etc/promtail/config.yml
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./promtail/config.yml:/etc/promtail/config.yml
     command: -config.file=/etc/promtail/config.yml
     networks:
-      - monitoring-network
+      - backend
     depends_on:
       - loki
 
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: recipe_node_exporter
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($|/)'
+    networks:
+      - backend
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.2
+    container_name: recipe_cadvisor
+    restart: unless-stopped
+    privileged: true
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    networks:
+      - backend
+
+  mysql-exporter:
+    image: prom/mysqld-exporter:latest
+    container_name: recipe_mysql_exporter
+    restart: unless-stopped
+    volumes:
+      - ./mysql-exporter/.my.cnf:/.my.cnf
+    networks:
+      - backend
+    depends_on:
+      - db
+
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:latest
+    container_name: recipe_nginx_exporter
+    restart: unless-stopped
+    command:
+      - -nginx.scrape-uri=http://nginx/nginx_status
+    networks:
+      - backend
+    depends_on:
+      - nginx
+
 networks:
-  frontend-network:
+  frontend:
     driver: bridge
-  backend-network:
+  backend:
     driver: bridge
-    internal: true # network isolation for backend
-  monitoring-network:
-    driver: bridge
+    internal: true
+
+volumes:
+  mysql_data:
+
+
+  prometheus_data:
+  grafana_data:
+
+
+
+
+
