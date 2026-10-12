@@ -36,3 +36,4 @@ for ($i = 1; $i -le 60; $i++) {
 Write-Host "==========================================================" -ForegroundColor Yellow
 Write-Host "  Hoan tat! So lieu dong da duoc bom vao Grafana & Loki!  " -ForegroundColor Yellow
 Write-Host "==========================================================" -ForegroundColor Yellow
+
