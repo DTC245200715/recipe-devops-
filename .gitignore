@@ -4,3 +4,4 @@ db/data/
 ~$*.docx
 *.tmp
 __pycache__/
+*.pdf
