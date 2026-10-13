@@ -20,44 +20,59 @@ recipe-devops/
 ├── docker-compose.yml
 ├── .env
 ├── .env.example
+├── .gitignore
 ├── README.md
-├── app/
-│   ├── Dockerfile
-│   ├── public/
-│   │   ├── index.php
-│   │   ├── admin.php
-│   │   ├── edit.php
-│   │   ├── recipe.php
-│   │   ├── login.php
-│   │   ├── logout.php
-│   │   ├── health.php
+│
+├── app/                                # Mã nguồn ứng dụng Web (PHP-FPM)
+│   ├── Dockerfile                      # Build image web với user non-root (appuser)
+│   ├── public/                         # Thư mục web public
+│   │   ├── index.php                   # Trang chủ danh sách món ăn & tìm kiếm
+│   │   ├── recipe.php                  # Trang chi tiết công thức
+│   │   ├── login.php                   # Đăng nhập quản trị viên
+│   │   ├── admin.php                   # Dashboard quản trị
+│   │   ├── edit.php                    # Thêm/sửa công thức
+│   │   ├── logout.php                  # Đăng xuất
+│   │   ├── health.php                  # API kiểm tra sức khỏe
 │   │   └── css/
-│   │       └── style.css
+│   │       └── style.css               # Giao diện website
 │   └── src/
-│       └── db.php
-├── db/
-│   └── init.sql
-├── nginx/
-│   ├── certs/
-│   └── conf.d/
-│       └── default.conf
-├── grafana/
-│   ├── dashboards/
-│   │   └── recipe-overview.json
-│   └── provisioning/
+│       └── db.php                      # Kết nối MySQL (PDO + Prepared Statements)
+│
+├── db/                                 # Cơ sở dữ liệu
+│   └── init.sql                        # Khởi tạo schema + 14 món ăn mẫu
+│
+├── grafana/                            # Cấu hình Grafana
+│   ├── dashboards/                     # Dashboards giám sát
+│   │   ├── recipe-overview.json        # Dashboard tổng quan hệ thống
+│   │   └── truy-van.json               # Dashboard TRUY VẤN (Gauge & Timeseries)
+│   └── provisioning/                   # Tự động nạp datasources & dashboards
 │       ├── dashboards/
 │       │   └── dashboard.yml
 │       └── datasources/
 │           └── datasource.yml
-├── loki/
-│   └── local-config.yaml
-├── mysql-exporter/
-│   └── .my.cnf
-├── prometheus/
-│   └── prometheus.yml
-├── promtail/
-│   └── config.yml
-└── .gitignore
+│
+├── loki/                               # Cấu hình Loki
+│   └── local-config.yaml               # Cấu hình lưu trữ log tập trung
+│
+├── mysql-exporter/                     # Cấu hình MySQL Exporter
+│   └── .my.cnf                         # Credential kết nối database an toàn
+│
+├── nginx/                              # Nginx Reverse Proxy
+│   ├── certs/                          # Chứng chỉ SSL tự ký
+│   │   ├── selfsigned.crt
+│   │   └── selfsigned.key
+│   └── conf.d/
+│       └── default.conf                # Cấu hình proxy, HTTPS, security headers
+│
+├── prometheus/                         # Cấu hình Prometheus
+│   └── prometheus.yml                  # 5 job scrape metrics (cadvisor, node, mysql, nginx, prometheus)
+│
+├── promtail/                           # Cấu hình Promtail
+│   └── config.yml                      # Đọc log từ Docker socket
+│
+└── scripts/                            # Script tiện ích
+    ├── generate_report.py              # Script tạo báo cáo PDF tổng hợp
+    └── generate_traffic.ps1            # Script mô phỏng traffic động cho hệ thống
 ```
 
 ## 3. Cách chạy dự án
@@ -123,7 +138,17 @@ docker compose ps
   - MySQL Exporter
   - Nginx Exporter
   - chính Prometheus self-monitoring
-- Dashboard mặc định: `Recipe system overview`
+- Dashboards có sẵn:
+  - `Recipe system overview`: Tổng quan hệ thống (CPU, RAM, Nginx HTTP Requests/sec, MySQL Queries/sec).
+  - `TRUY VẤN`: Dashboard trực quan hóa với Gauge và Timeseries.
+
+### Tạo lưu lượng truy cập thử nghiệm (Traffic Generator)
+
+Để tạo số liệu động mô phỏng cho Grafana và Loki, chạy script:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\generate_traffic.ps1
+```
 
 ### Loki / Promtail
 
