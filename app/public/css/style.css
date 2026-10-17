@@ -1,19 +1,37 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 :root {
-    --primary-color: #ff6b6b;
-    --primary-hover: #ff5252;
-    --secondary-color: #feca57;
-    --text-main: #2d3436;
-    --text-muted: #636e72;
-    --bg-color: #fff9f3;
-    --card-bg: #ffffff;
+    --primary-color: #006FEE;
+    --primary-hover: #005bc4;
+    --primary-focus: #0050ad;
+    --primary-50: #e6f1fe;
+    --primary-100: #cce3fd;
+    --secondary-color: #7828C8;
+    --success-color: #17C964;
+    --warning-color: #F5A524;
+    --danger-color: #F31260;
+    --text-main: #11181C;
+    --text-muted: #71717A;
+    --bg-color: #FAFAFA;
+    --card-bg: #FFFFFF;
+    --content2: #F4F4F5;
+    --content3: #E4E4E7;
+    --border-color: #E4E4E7;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-full: 9999px;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 14px 0 rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background-color: var(--bg-color);
     color: var(--text-main);
+    -webkit-font-smoothing: antialiased;
 }
 
 /* Navbar */
@@ -290,12 +308,153 @@ body {
     padding: 15px 20px;
     border-bottom: none;
 }
-.table-custom th {
+/* HeroUI Component Overrides & Utilities */
+.heroui-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.heroui-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.heroui-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border-color);
+    background: transparent;
     font-weight: 600;
-    color: var(--text-muted);
-    border-bottom-width: 1px;
 }
-.table-custom td {
-    vertical-align: middle;
+
+.heroui-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
+.heroui-label {
+    font-size: 0.825rem;
+    font-weight: 600;
+    color: var(--text-main);
+    letter-spacing: -0.01em;
+}
+.heroui-input {
+    background-color: var(--content2) !important;
+    border: 2px solid transparent !important;
+    border-radius: var(--radius-md) !important;
+    padding: 10px 14px !important;
+    font-size: 0.925rem;
+    color: var(--text-main) !important;
+    transition: all 0.2s ease !important;
+}
+.heroui-input:hover {
+    background-color: var(--content3) !important;
+}
+.heroui-input:focus {
+    background-color: #FFFFFF !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px var(--primary-50) !important;
+}
+
+.heroui-btn-primary {
+    background: var(--primary-color);
+    color: #FFFFFF !important;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 10px 20px;
+    font-weight: 600;
+    font-size: 0.925rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0, 111, 238, 0.35);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.heroui-btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 111, 238, 0.45);
+}
+.heroui-btn-primary:active {
+    transform: translateY(0);
+}
+
+.heroui-btn-light {
+    background: var(--content2);
+    color: var(--text-main) !important;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    padding: 8px 16px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+.heroui-btn-light:hover {
+    background: var(--content3);
+    color: var(--text-main) !important;
+}
+
+.heroui-btn-danger {
+    background: rgba(243, 18, 96, 0.1);
+    color: var(--danger-color) !important;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 8px 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+.heroui-btn-danger:hover {
+    background: var(--danger-color);
+    color: #FFFFFF !important;
+}
+
+.heroui-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    font-size: 0.775rem;
+    font-weight: 600;
+    border-radius: var(--radius-full);
+}
+.heroui-badge-primary {
+    background: var(--primary-50);
+    color: var(--primary-color);
+}
+.heroui-badge-warning {
+    background: rgba(245, 165, 36, 0.15);
+    color: #B77405;
+}
+.heroui-badge-success {
+    background: rgba(23, 201, 100, 0.15);
+    color: #12A150;
+}
+.heroui-badge-danger {
+    background: rgba(243, 18, 96, 0.15);
+    color: var(--danger-color);
+}
+
+.ingredient-row {
+    background: var(--content2);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    margin-bottom: 10px;
+    transition: all 0.2s ease;
+}
+.ingredient-row:hover {
+    border-color: var(--primary-100);
+    background: #FFFFFF;
+    box-shadow: var(--shadow-sm);
+}
+
+.avatar-preview {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+    border: 2px solid var(--border-color);
+}
+
 

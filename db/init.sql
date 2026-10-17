@@ -59,7 +59,7 @@ CREATE TABLE `ingredients` (
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,7 +68,7 @@ CREATE TABLE `ingredients` (
 
 LOCK TABLES `ingredients` WRITE;
 /*!40000 ALTER TABLE `ingredients` DISABLE KEYS */;
-INSERT INTO `ingredients` VALUES (2,'Bánh phở'),(20,'Bánh tráng'),(39,'Bí đỏ'),(43,'Bột bánh xèo'),(33,'Bột năng'),(6,'Bún tươi'),(15,'Cà chua'),(7,'Cá lóc'),(48,'Đá bào'),(36,'Da heo'),(42,'Dầu ăn'),(16,'Đậu bắp'),(29,'Dầu hào'),(8,'Đậu hũ non'),(13,'Đu đủ xanh'),(14,'Dứa'),(34,'Đường đen'),(25,'Đường phèn'),(49,'Gan heo'),(10,'Gạo tấm'),(24,'Gelatin'),(45,'Giá đỗ'),(26,'Hạnh nhân lát'),(40,'Hành tím'),(38,'Mật ong'),(17,'Me chua'),(41,'Ngò gai'),(46,'Nước cốt dừa'),(4,'Nước mắm'),(28,'Sa tế'),(32,'Sữa đặc'),(22,'Sữa tươi không đường'),(35,'Sườn cốt lết'),(9,'Sườn non'),(37,'Thính gạo'),(11,'Thịt ba chỉ'),(3,'Thịt bò'),(5,'Thịt heo'),(27,'Thịt heo băm'),(18,'Thịt lợn luộc'),(12,'Thịt nạc vai băm'),(50,'Tiêu đen'),(30,'Tỏi băm'),(44,'Tôm đất'),(19,'Tôm tươi'),(31,'Trà đen'),(23,'Whipping cream'),(21,'Xà lách'),(47,'Xoài chín'),(1,'Xương bò');
+INSERT INTO `ingredients` VALUES (2,'Bánh phở'),(20,'Bánh tráng'),(51,'Bắp bò'),(39,'Bí đỏ'),(43,'Bột bánh xèo'),(33,'Bột năng'),(6,'Bún tươi'),(15,'Cà chua'),(7,'Cá lóc'),(52,'Chả cua'),(48,'Đá bào'),(36,'Da heo'),(42,'Dầu ăn'),(16,'Đậu bắp'),(29,'Dầu hào'),(8,'Đậu hũ non'),(13,'Đu đủ xanh'),(14,'Dứa'),(34,'Đường đen'),(25,'Đường phèn'),(49,'Gan heo'),(10,'Gạo tấm'),(24,'Gelatin'),(45,'Giá đỗ'),(26,'Hạnh nhân lát'),(40,'Hành tím'),(55,'Mắm ruốc Huế'),(38,'Mật ong'),(17,'Me chua'),(41,'Ngò gai'),(46,'Nước cốt dừa'),(4,'Nước mắm'),(54,'Ớt bột Huế'),(53,'Sả'),(28,'Sa tế'),(32,'Sữa đặc'),(22,'Sữa tươi không đường'),(35,'Sườn cốt lết'),(9,'Sườn non'),(37,'Thính gạo'),(11,'Thịt ba chỉ'),(3,'Thịt bò'),(5,'Thịt heo'),(27,'Thịt heo băm'),(18,'Thịt lợn luộc'),(12,'Thịt nạc vai băm'),(50,'Tiêu đen'),(30,'Tỏi băm'),(44,'Tôm đất'),(19,'Tôm tươi'),(31,'Trà đen'),(23,'Whipping cream'),(21,'Xà lách'),(47,'Xoài chín'),(1,'Xương bò');
 /*!40000 ALTER TABLE `ingredients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -97,7 +97,7 @@ CREATE TABLE `recipe_ingredients` (
 
 LOCK TABLES `recipe_ingredients` WRITE;
 /*!40000 ALTER TABLE `recipe_ingredients` DISABLE KEYS */;
-INSERT INTO `recipe_ingredients` VALUES (1,1,'1','kg'),(1,2,'500','g'),(1,3,'300','g'),(2,4,'5','muỗng'),(2,6,'1','kg'),(2,11,'500','g'),(2,12,'300','g'),(2,13,'1/2','quả'),(3,7,'500','g'),(3,14,'1/2','quả'),(3,15,'2','quả'),(3,16,'100','g'),(3,17,'50','g'),(4,18,'300','g'),(4,19,'300','g'),(4,20,'1','xấp'),(4,21,'200','g'),(5,22,'500','ml'),(5,23,'500','ml'),(5,24,'25','g'),(5,25,'150','g'),(5,26,'50','g'),(6,8,'2','hộp'),(6,27,'150','g'),(6,28,'2','muỗng'),(6,29,'1','muỗng'),(6,30,'1','củ'),(7,31,'50','g'),(7,32,'100','ml'),(7,33,'150','g'),(7,34,'100','g'),(8,10,'500','g'),(8,35,'500','g'),(8,36,'200','g'),(8,37,'50','g'),(8,38,'2','muỗng'),(9,39,'500','g'),(9,40,'2','củ'),(9,41,'1','mớ'),(9,42,'1','muỗng'),(10,43,'400','g'),(10,44,'300','g'),(10,45,'200','g'),(10,46,'200','ml'),(11,47,'2','quả'),(11,48,'1','ly'),(13,49,'300','g'),(13,50,'1','muỗng');
+INSERT INTO `recipe_ingredients` VALUES (1,1,'1','kg'),(1,2,'500','g'),(1,3,'300','g'),(2,4,'5','muỗng'),(2,6,'1','kg'),(2,11,'500','g'),(2,12,'300','g'),(2,13,'1/2','quả'),(3,7,'500','g'),(3,14,'1/2','quả'),(3,15,'2','quả'),(3,16,'100','g'),(3,17,'50','g'),(4,18,'300','g'),(4,19,'300','g'),(4,20,'1','xấp'),(4,21,'200','g'),(5,22,'500','ml'),(5,23,'500','ml'),(5,24,'25','g'),(5,25,'150','g'),(5,26,'50','g'),(6,8,'2','hộp'),(6,27,'150','g'),(6,28,'2','muỗng'),(6,29,'1','muỗng'),(6,30,'1','củ'),(7,31,'50','g'),(7,32,'100','ml'),(7,33,'150','g'),(7,34,'100','g'),(8,10,'500','g'),(8,35,'500','g'),(8,36,'200','g'),(8,37,'50','g'),(8,38,'2','muỗng'),(9,39,'500','g'),(9,40,'2','củ'),(9,41,'1','mớ'),(9,42,'1','muỗng'),(10,43,'400','g'),(10,44,'300','g'),(10,45,'200','g'),(10,46,'200','ml'),(11,47,'2','quả'),(11,48,'1','ly'),(13,49,'300','g'),(13,50,'1','muỗng'),(14,1,'500','g'),(14,6,'500','g'),(14,51,'400','g'),(14,52,'200','g'),(14,53,'4','cây'),(14,55,'2','muỗng');
 /*!40000 ALTER TABLE `recipe_ingredients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -175,4 +175,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-10-12 13:32:56
+-- Dump completed on 2026-10-17  9:42:36
