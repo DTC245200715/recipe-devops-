@@ -496,4 +496,164 @@ body {
     border: 2px solid var(--border-color);
 }
 
+/* Category Grid & Visual Cards */
+.category-section-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+}
+.category-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 14px 8px;
+    text-align: center;
+    text-decoration: none !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    cursor: pointer;
+}
+.category-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary-color);
+    box-shadow: 0 8px 20px rgba(0, 111, 238, 0.12);
+}
+.category-card.active {
+    background: var(--primary-50);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px var(--primary-100);
+}
+.category-card.active .category-name {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+.category-icon-box {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+    transition: transform 0.2s ease;
+}
+.category-card:hover .category-icon-box {
+    transform: scale(1.12);
+}
+.category-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 2px;
+    line-height: 1.2;
+}
+.category-tag {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* Star Ratings on Recipe Cards */
+.recipe-rating {
+    background: rgba(245, 165, 36, 0.1);
+    padding: 3px 8px;
+    border-radius: var(--radius-full);
+}
+.stars-gold {
+    color: #F5A524;
+    font-size: 0.8rem;
+}
+.rating-score {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #11181C;
+}
+.rating-count {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+/* HeroUI Footer */
+.heroui-footer {
+    background: #FFFFFF;
+    border-top: 1px solid var(--border-color);
+}
+.brand-icon-box {
+    width: 36px;
+    height: 36px;
+    background: var(--primary-50);
+    color: var(--primary-color);
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+.footer-title {
+    font-size: 0.95rem;
+    letter-spacing: -0.2px;
+}
+.footer-menu li {
+    margin-bottom: 8px;
+}
+.footer-menu a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+.footer-menu a:hover {
+    color: var(--primary-color);
+    transform: translateX(4px);
+}
+.social-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF !important;
+    text-decoration: none !important;
+    font-size: 0.95rem;
+    transition: all 0.25s ease;
+    box-shadow: var(--shadow-sm);
+}
+.social-btn:hover {
+    transform: translateY(-3px) scale(1.08);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+}
+.social-facebook { background: #1877F2; }
+.social-youtube { background: #FF0000; }
+.social-tiktok { background: #000000; }
+.social-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+
+.status-pulse-green {
+    width: 8px;
+    height: 8px;
+    background: #17C964;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 0 2px rgba(23, 201, 100, 0.3);
+    animation: pulseStatus 2s infinite;
+}
+@keyframes pulseStatus {
+    0% { box-shadow: 0 0 0 0 rgba(23, 201, 100, 0.6); }
+    70% { box-shadow: 0 0 0 6px rgba(23, 201, 100, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(23, 201, 100, 0); }
+}
+
+
 
