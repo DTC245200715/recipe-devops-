@@ -192,21 +192,23 @@ $visualCategories = [
             <p class="hero-subtitle">Tìm kiếm, lưu trữ và chia sẻ những công thức nấu ăn tuyệt vời nhất cho gia đình bạn.</p>
         </div>
 
-        <!-- Search Bar with Live Filter -->
+        <!-- Search Bar with Live Filter (Đã bỏ dropdown danh mục theo yêu cầu, đồng bộ với lưới Icon bên dưới) -->
         <div class="row mb-4 justify-content-center">
-            <div class="col-lg-8">
-                <form class="d-flex search-form" method="GET" action="index.php">
-                    <input class="form-control me-2" type="search" name="q" placeholder="Tìm kiếm món phở, bún chả, mỳ ý, canh chua..." value="<?= htmlspecialchars($search) ?>" id="searchInput" autofocus autocomplete="off">
-                    <select class="form-select me-2" name="category" style="max-width: 220px;" onchange="this.form.submit()">
-                        <option value="0">Tất cả danh mục</option>
-                        <?php foreach($categories as $cat): ?>
-                            <option value="<?= $cat['id'] ?>" <?= $categoryId == $cat['id'] ? 'selected' : '' ?>><?= htmlspecialchars($cat['name']) ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <?php if(!empty($filter)): ?>
-                        <input type="hidden" name="filter" value="<?= htmlspecialchars($filter) ?>">
-                    <?php endif; ?>
-                    <button class="btn btn-primary-custom" type="submit" title="Tìm kiếm"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <div class="col-lg-7 col-md-9">
+                <form method="GET" action="index.php">
+                    <div class="input-group search-input-group">
+                        <span class="input-group-text">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </span>
+                        <input class="form-control" type="search" name="q" placeholder="Tìm kiếm món phở, bún chả, mỳ ý, canh chua..." value="<?= htmlspecialchars($search) ?>" id="searchInput" autofocus autocomplete="off">
+                        <?php if($categoryId > 0): ?>
+                            <input type="hidden" name="category" value="<?= $categoryId ?>">
+                        <?php endif; ?>
+                        <?php if(!empty($filter)): ?>
+                            <input type="hidden" name="filter" value="<?= htmlspecialchars($filter) ?>">
+                        <?php endif; ?>
+                        <button class="btn btn-primary-custom" type="submit">Tìm kiếm</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -279,11 +281,11 @@ $visualCategories = [
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <span class="badge-category m-0"><?= htmlspecialchars($recipe['category_name'] ?? 'Món chính') ?></span>
                                             
-                                            <!-- ĐÁNH GIÁ SAO CHO TỪNG MÓN -->
-                                            <div class="recipe-rating d-flex align-items-center gap-1" title="Đánh giá: <?= number_format($score, 1) ?> / 5 sao">
-                                                <i class="fa-solid fa-star stars-gold"></i>
-                                                <span class="rating-score"><?= number_format($score, 1) ?></span>
-                                                <span class="rating-count">(<?= $reviews ?>)</span>
+                                            <!-- THIẾT KẾ ĐÁNH GIÁ SAO CHUẨN HEROUI -->
+                                            <div class="heroui-rating-badge" title="Đánh giá chất lượng: <?= number_format($score, 1) ?> / 5 sao (<?= $reviews ?> đánh giá)">
+                                                <i class="fa-solid fa-star star-icon"></i>
+                                                <span class="rating-num"><?= number_format($score, 1) ?></span>
+                                                <span class="rating-reviews">(<?= $reviews ?>)</span>
                                             </div>
                                         </div>
 

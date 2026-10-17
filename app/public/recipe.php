@@ -60,10 +60,10 @@ $ingredients = $stmtIng->fetchAll();
                     ?>
                     <div class="d-flex align-items-center gap-2 mb-3">
                         <span class="badge-category m-0"><?= htmlspecialchars($recipe['category_name'] ?? 'Chưa phân loại') ?></span>
-                        <div class="recipe-rating d-flex align-items-center gap-1" title="Đánh giá: <?= number_format($score, 1) ?> sao">
-                            <i class="fa-solid fa-star stars-gold"></i>
-                            <span class="rating-score"><?= number_format($score, 1) ?></span>
-                            <span class="rating-count">(<?= $reviews ?> đánh giá)</span>
+                        <div class="heroui-rating-badge" title="Đánh giá chất lượng: <?= number_format($score, 1) ?> / 5 sao (<?= $reviews ?> đánh giá)">
+                            <i class="fa-solid fa-star star-icon"></i>
+                            <span class="rating-num"><?= number_format($score, 1) ?></span>
+                            <span class="rating-reviews">(<?= $reviews ?> đánh giá)</span>
                         </div>
                     </div>
                     <h1 class="recipe-title" style="font-size: 2.5rem;"><?= htmlspecialchars($recipe['title']) ?></h1>
