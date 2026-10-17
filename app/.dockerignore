@@ -1,0 +1,12 @@
+# Docker build ignore for PHP-FPM app
+.git
+.gitignore
+.env*
+*.md
+*.log
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db
+.vscode
+.idea

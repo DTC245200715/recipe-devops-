@@ -1,7 +1,41 @@
+# Environment & Secrets
 .env
-app/public/uploads/
+.env.local
+*.pem
+*.key
+!nginx/certs/selfsigned.key
+
+# Runtime & Uploads (keep initial sample dish assets)
 db/data/
-~$*.docx
+app/public/uploads/*
+!app/public/uploads/banh-cuon-cha-que.jpg
+!app/public/uploads/banh-mi-chao.jpg
+!app/public/uploads/che-khuc-bach.jpg
+!app/public/uploads/mi-y-sot-bo-bam.jpg
+!app/public/uploads/thit-kho-tau.jpg
+!app/public/uploads/trung-cuon.jpg
+
+# Temporary & Cache files
 *.tmp
+*.bak
+*.old
+*.swp
+*~
+~$*.docx
 __pycache__/
-*.pdf
+*.py[cod]
+
+# OS & Editor generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Build & Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

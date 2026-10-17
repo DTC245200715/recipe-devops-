@@ -1,0 +1,15 @@
+# Root Docker ignore
+.git
+.gitignore
+.env
+report/
+screenshots/
+scripts/
+*.md
+*.log
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db
+.vscode
+.idea
