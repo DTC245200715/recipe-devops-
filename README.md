@@ -11,7 +11,7 @@ Website chia sẻ công thức nấu ăn được triển khai theo kiến trúc
 - Monitoring: Prometheus + Grafana + Node Exporter + cAdvisor + mysqld_exporter + nginx_exporter
 - Logging: Loki + Promtail
 - Hardening: container non-root, network isolation, security headers, quyền hạn tối thiểu
-- UI/UX: Sử dụng thống nhất bộ phông chữ **Poppins** của Google Fonts và bộ icon FontAwesome để mang lại giao diện hiện đại, đồng bộ trên toàn bộ website.
+- UI/UX: Thiết kế hiện đại chuẩn HeroUI với phông chữ **Plus Jakarta Sans**, bộ icon FontAwesome, hệ thống đánh giá sao cộng đồng thời gian thực và Bảng thông số Dinh dưỡng (Nutritional Information) chuẩn khoa học.
 
 ## 2. Cấu trúc thư mục
 
@@ -21,25 +21,34 @@ recipe-devops/
 ├── .env
 ├── .env.example
 ├── .gitignore
+├── .dockerignore
 ├── README.md
 │
 ├── app/                                # Mã nguồn ứng dụng Web (PHP-FPM)
 │   ├── Dockerfile                      # Build image web với user non-root (appuser)
+│   ├── .dockerignore                   # Tối ưu hóa build context Docker
 │   ├── public/                         # Thư mục web public
-│   │   ├── index.php                   # Trang chủ danh sách món ăn & tìm kiếm
-│   │   ├── recipe.php                  # Trang chi tiết công thức
+│   │   ├── index.php                   # Trang chủ danh sách món ăn, danh mục & đánh giá sao
+│   │   ├── recipe.php                  # Trang chi tiết công thức, Bảng Dinh Dưỡng & Nhận xét
 │   │   ├── login.php                   # Đăng nhập quản trị viên
 │   │   ├── admin.php                   # Dashboard quản trị
-│   │   ├── edit.php                    # Thêm/sửa công thức
+│   │   ├── edit.php                    # Thêm/sửa công thức, nguyên liệu động & dinh dưỡng
 │   │   ├── logout.php                  # Đăng xuất
 │   │   ├── health.php                  # API kiểm tra sức khỏe
+│   │   ├── uploads/                    # Ảnh thành phẩm món ăn mẫu
 │   │   └── css/
-│   │       └── style.css               # Giao diện website
+│   │       └── style.css               # Giao diện website chuẩn HeroUI
 │   └── src/
 │       └── db.php                      # Kết nối MySQL (PDO + Prepared Statements)
 │
 ├── db/                                 # Cơ sở dữ liệu
-│   └── init.sql                        # Khởi tạo schema + 14 món ăn mẫu
+│   └── init.sql                        # Schema hoàn chỉnh (recipes, reviews, nutrition, categories)
+│
+├── report/                             # Tài liệu báo cáo thực hành chi tiết
+│   └── BAO_CAO_THUC_HANH_CHI_TIET.md
+│
+├── screenshots/                        # Ảnh chụp màn hình minh chứng hệ thống
+│   └── .gitkeep
 │
 ├── grafana/                            # Cấu hình Grafana
 │   ├── dashboards/                     # Dashboards giám sát
@@ -71,7 +80,7 @@ recipe-devops/
 │   └── config.yml                      # Đọc log từ Docker socket
 │
 └── scripts/                            # Script tiện ích
-    ├── generate_report.py              # Script tạo báo cáo PDF tổng hợp
+    ├── generate_report.py              # Script tạo báo cáo PDF tổng hợp (đường dẫn động)
     └── generate_traffic.ps1            # Script mô phỏng traffic động cho hệ thống
 ```
 
