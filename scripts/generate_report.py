@@ -1,3 +1,4 @@
+import os
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
@@ -5,7 +6,9 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.graphics.shapes import Drawing, Rect, String, Line
 from reportlab.lib.colors import HexColor
 
-pdf_path = r'D:\recipe-devops\BAO CAO.pdf'
+# Đường dẫn file PDF tự động nhận diện theo thư mục gốc của dự án
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+pdf_path = os.path.join(ROOT_DIR, 'BAO CAO.pdf')
 
 heading = ParagraphStyle(
     'heading',
