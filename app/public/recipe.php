@@ -180,10 +180,10 @@ if ($nutrition) {
             </div>
         </div>
 
-        <div class="row g-4 mb-5">
+        <!-- HÀNG 1: NGUYÊN LIỆU & CÁC BƯỚC THỰC HIỆN (KHÔNG KHOẢNG TRẮNG THỪA) -->
+        <div class="row g-4 mb-4">
             <div class="col-lg-4">
-                <!-- KHỐI NGUYÊN LIỆU -->
-                <div class="content-card mb-4">
+                <div class="content-card h-100 mb-0">
                     <h4 class="content-title"><i class="fa-solid fa-basket-shopping"></i> Nguyên liệu</h4>
                     <ul class="list-group ingredient-list">
                         <?php if(count($ingredients) > 0): ?>
@@ -200,27 +200,58 @@ if ($nutrition) {
                         <?php endif; ?>
                     </ul>
                 </div>
-
-                <!-- KHỐI BẢNG THÔNG SỐ DINH DƯỠNG (NUTRITIONAL INFORMATION) -->
-                <?php if($nutrition): ?>
-                <div class="content-card">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="content-title m-0">
-                            <i class="fa-solid fa-heart-pulse text-danger"></i> Giá trị Dinh dưỡng
-                        </h4>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 fw-semibold" style="font-size: 0.75rem;">
-                            1 Khẩu phần
-                        </span>
+            </div>
+            
+            <div class="col-lg-8">
+                <div class="content-card h-100 mb-0">
+                    <h4 class="content-title"><i class="fa-solid fa-list-check"></i> Các bước thực hiện</h4>
+                    <div class="instructions-wrapper mt-3">
+                        <?php 
+                            $instructions = explode("\n", $recipe['instructions']);
+                            $stepNum = 1;
+                            foreach($instructions as $step) {
+                                if(trim($step) !== '') {
+                                    echo '<div class="instruction-step mb-3">';
+                                    echo '<div class="step-number">' . $stepNum . '</div>';
+                                    echo '<div class="step-text">' . nl2br(htmlspecialchars(trim($step))) . '</div>';
+                                    echo '</div>';
+                                    $stepNum++;
+                                }
+                            }
+                        ?>
                     </div>
-                    <p class="text-muted small mb-3">
-                        Bảng phân tích dinh dưỡng chuẩn hóa ước tính trên mỗi khẩu phần ăn:
-                    </p>
+                </div>
+            </div>
+        </div>
 
-                    <!-- Điểm nhấn Calo lớn chuẩn HeroUI -->
-                    <div class="p-3 rounded-4 mb-3" style="background: linear-gradient(135deg, rgba(0, 111, 238, 0.08) 0%, rgba(245, 165, 36, 0.1) 100%); border: 1px solid rgba(0, 111, 238, 0.15);">
+        <!-- HÀNG 2: BẢNG THÔNG SỐ DINH DƯỠNG (NUTRITIONAL INFORMATION) DẠNG NGANG CHUẨN HEROUI -->
+        <?php if($nutrition): ?>
+        <div class="content-card mb-5">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="fs-4 text-danger"><i class="fa-solid fa-heart-pulse"></i></span>
+                    <div>
+                        <h4 class="fw-bold m-0 text-dark" style="font-size: 1.25rem;">Bảng thông số Dinh dưỡng (Nutritional Information)</h4>
+                        <small class="text-muted">Ước tính tiêu chuẩn dinh dưỡng dựa trên 1 khẩu phần ăn của món</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
+                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2 fw-semibold">
+                        <i class="fa-solid fa-utensils me-1"></i> 1 Khẩu phần (Serving)
+                    </span>
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-2 fw-semibold">
+                        <i class="fa-solid fa-users me-1"></i> Món ăn: <?= $recipe['servings'] ?> phần
+                    </span>
+                </div>
+            </div>
+
+            <div class="row g-4 align-items-center">
+                <!-- Cột trái: Năng lượng (Calories) + Macro Distribution Bar -->
+                <div class="col-lg-4 border-end-lg pe-lg-4">
+                    <div class="p-3 rounded-4" style="background: linear-gradient(135deg, rgba(0, 111, 238, 0.08) 0%, rgba(245, 165, 36, 0.1) 100%); border: 1px solid rgba(0, 111, 238, 0.15);">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <span class="text-uppercase text-muted fw-bold" style="font-size: 0.75rem; letter-spacing: 0.5px;">Năng lượng</span>
+                                <span class="text-uppercase text-muted fw-bold" style="font-size: 0.75rem; letter-spacing: 0.5px;">Tổng Năng Lượng</span>
                                 <div class="display-6 fw-bold text-dark m-0" style="line-height: 1.1;">
                                     <?= number_format($nutrition['calories']) ?> <span class="fs-6 fw-semibold text-secondary">kcal</span>
                                 </div>
@@ -239,102 +270,63 @@ if ($nutrition) {
                                 <span><i class="fa-solid fa-circle text-success me-1" style="font-size: 8px;"></i>Carbs <?= $macroCPct ?>%</span>
                                 <span><i class="fa-solid fa-circle text-warning me-1" style="font-size: 8px;"></i>Béo <?= $macroFPct ?>%</span>
                             </div>
-                            <div class="progress" style="height: 7px; border-radius: 999px; overflow: hidden; background: #e4e4e7;">
+                            <div class="progress" style="height: 8px; border-radius: 999px; overflow: hidden; background: #e4e4e7;">
                                 <div class="progress-bar bg-primary" role="progressbar" style="width: <?= $macroPPct ?>%" title="Protein <?= $macroPPct ?>%"></div>
                                 <div class="progress-bar bg-success" role="progressbar" style="width: <?= $macroCPct ?>%" title="Carbs <?= $macroCPct ?>%"></div>
                                 <div class="progress-bar bg-warning" role="progressbar" style="width: <?= $macroFPct ?>%" title="Fat <?= $macroFPct ?>%"></div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Bảng chi tiết từng thành phần dinh dưỡng -->
-                    <div class="nutrition-details-table">
-                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                            <div>
-                                <span class="fw-bold text-dark">Chất đạm (Protein)</span>
-                                <small class="text-muted d-block" style="font-size: 0.75rem;">Tái tạo và phát triển cơ bắp</small>
-                            </div>
-                            <div class="text-end">
-                                <span class="fw-bold text-dark"><?= $nutrition['protein'] ?>g</span>
-                                <span class="badge bg-light text-secondary border rounded-pill ms-1" style="font-size: 0.7rem;"><?= $pctProtein ?>%</span>
+                <!-- Cột phải: 5 ô chỉ số Dinh dưỡng Grid chuẩn HeroUI -->
+                <div class="col-lg-8">
+                    <div class="row g-3">
+                        <div class="col-md-4 col-6">
+                            <div class="p-3 rounded-4 bg-light border text-center h-100 d-flex flex-column justify-content-between">
+                                <span class="text-muted small fw-semibold">Chất đạm (Protein)</span>
+                                <div class="fs-4 fw-bold text-dark my-1"><?= $nutrition['protein'] ?>g</div>
+                                <div><span class="badge bg-primary-subtle text-primary border rounded-pill px-2 py-1" style="font-size: 0.7rem;"><?= $pctProtein ?>% Daily Value</span></div>
                             </div>
                         </div>
-
-                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                            <div>
-                                <span class="fw-bold text-dark">Chất béo (Lipid / Fat)</span>
-                                <small class="text-muted d-block" style="font-size: 0.75rem;">Duy trì năng lượng và màng tế bào</small>
-                            </div>
-                            <div class="text-end">
-                                <span class="fw-bold text-dark"><?= $nutrition['fat'] ?>g</span>
-                                <span class="badge bg-light text-secondary border rounded-pill ms-1" style="font-size: 0.7rem;"><?= $pctFat ?>%</span>
+                        <div class="col-md-4 col-6">
+                            <div class="p-3 rounded-4 bg-light border text-center h-100 d-flex flex-column justify-content-between">
+                                <span class="text-muted small fw-semibold">Chất béo (Lipid / Fat)</span>
+                                <div class="fs-4 fw-bold text-dark my-1"><?= $nutrition['fat'] ?>g</div>
+                                <div><span class="badge bg-warning-subtle text-warning border rounded-pill px-2 py-1" style="font-size: 0.7rem;"><?= $pctFat ?>% Daily Value</span></div>
                             </div>
                         </div>
-
-                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                            <div>
-                                <span class="fw-bold text-dark">Tinh bột (Carbohydrate)</span>
-                                <small class="text-muted d-block" style="font-size: 0.75rem;">Nguồn nhiên liệu chính cho não bộ</small>
-                            </div>
-                            <div class="text-end">
-                                <span class="fw-bold text-dark"><?= $nutrition['carbs'] ?>g</span>
-                                <span class="badge bg-light text-secondary border rounded-pill ms-1" style="font-size: 0.7rem;"><?= $pctCarbs ?>%</span>
+                        <div class="col-md-4 col-6">
+                            <div class="p-3 rounded-4 bg-light border text-center h-100 d-flex flex-column justify-content-between">
+                                <span class="text-muted small fw-semibold">Tinh bột (Carbs)</span>
+                                <div class="fs-4 fw-bold text-dark my-1"><?= $nutrition['carbs'] ?>g</div>
+                                <div><span class="badge bg-success-subtle text-success border rounded-pill px-2 py-1" style="font-size: 0.7rem;"><?= $pctCarbs ?>% Daily Value</span></div>
                             </div>
                         </div>
-
-                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                            <div>
-                                <span class="fw-semibold text-secondary">Chất xơ (Dietary Fiber)</span>
-                                <small class="text-muted d-block" style="font-size: 0.75rem;">Hỗ trợ hệ tiêu hóa khỏe mạnh</small>
-                            </div>
-                            <div class="text-end">
-                                <span class="fw-semibold text-dark"><?= $nutrition['fiber'] ?>g</span>
-                                <span class="badge bg-light text-secondary border rounded-pill ms-1" style="font-size: 0.7rem;"><?= $pctFiber ?>%</span>
+                        <div class="col-md-6 col-6">
+                            <div class="p-3 rounded-4 bg-light border text-center h-100 d-flex flex-column justify-content-between">
+                                <span class="text-muted small fw-semibold">Chất xơ (Dietary Fiber)</span>
+                                <div class="fs-4 fw-bold text-dark my-1"><?= $nutrition['fiber'] ?>g</div>
+                                <div><span class="badge bg-secondary-subtle text-secondary border rounded-pill px-2 py-1" style="font-size: 0.7rem;"><?= $pctFiber ?>% Daily Value</span></div>
                             </div>
                         </div>
-
-                        <div class="d-flex justify-content-between align-items-center py-2">
-                            <div>
-                                <span class="fw-semibold text-secondary">Natri (Sodium)</span>
-                                <small class="text-muted d-block" style="font-size: 0.75rem;">Cân bằng nước và điện giải</small>
-                            </div>
-                            <div class="text-end">
-                                <span class="fw-semibold text-dark"><?= $nutrition['sodium'] ?>mg</span>
-                                <span class="badge bg-light text-secondary border rounded-pill ms-1" style="font-size: 0.7rem;"><?= $pctSodium ?>%</span>
+                        <div class="col-md-6 col-12">
+                            <div class="p-3 rounded-4 bg-light border text-center h-100 d-flex flex-column justify-content-between">
+                                <span class="text-muted small fw-semibold">Natri (Sodium)</span>
+                                <div class="fs-4 fw-bold text-dark my-1"><?= $nutrition['sodium'] ?>mg</div>
+                                <div><span class="badge bg-danger-subtle text-danger border rounded-pill px-2 py-1" style="font-size: 0.7rem;"><?= $pctSodium ?>% Daily Value</span></div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="mt-3 pt-2 border-top">
-                        <small class="text-muted fst-italic d-block" style="font-size: 0.72rem; line-height: 1.4;">
-                            * % Giá trị Dinh dưỡng Hàng ngày (% Daily Value) dựa trên nhu cầu dinh dưỡng chuẩn 2.000 calo/ngày.
-                        </small>
                     </div>
                 </div>
-                <?php endif; ?>
             </div>
-            
-            <div class="col-lg-8">
-                <div class="content-card h-100">
-                    <h4 class="content-title"><i class="fa-solid fa-list-check"></i> Các bước thực hiện</h4>
-                    <div class="instructions-wrapper mt-4">
-                        <?php 
-                            $instructions = explode("\n", $recipe['instructions']);
-                            $stepNum = 1;
-                            foreach($instructions as $step) {
-                                if(trim($step) !== '') {
-                                    echo '<div class="instruction-step">';
-                                    echo '<div class="step-number">' . $stepNum . '</div>';
-                                    echo '<div class="step-text">' . nl2br(htmlspecialchars(trim($step))) . '</div>';
-                                    echo '</div>';
-                                    $stepNum++;
-                                }
-                            }
-                        ?>
-                    </div>
-                </div>
+
+            <div class="mt-3 pt-3 border-top d-flex flex-wrap justify-content-between align-items-center text-muted" style="font-size: 0.75rem;">
+                <span>* % Giá trị Dinh dưỡng Hàng ngày (% Daily Value) dựa trên nhu cầu dinh dưỡng chuẩn 2.000 calo/ngày.</span>
+                <span class="text-secondary"><i class="fa-solid fa-circle-info me-1"></i>Chuẩn hóa theo Viện Dinh Dưỡng Quốc Gia</span>
             </div>
         </div>
+        <?php endif; ?>
 
         <!-- PHẦN ĐÁNH GIÁ SAO VÀ BÌNH LUẬN DÀNH CHO NGƯỜI DÙNG -->
         <div id="reviewsSection" class="content-card mb-5">
