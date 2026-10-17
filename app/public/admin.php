@@ -232,7 +232,11 @@ $categories = $pdo->query("SELECT * FROM categories")->fetchAll();
                                 <div id="ingredientsList">
                                     <div class="ingredient-row d-flex align-items-center gap-2">
                                         <input type="text" name="ingredients[0][name]" class="form-control heroui-input" placeholder="Tên nguyên liệu (VD: Thịt bò)" style="flex: 2;">
-                                        <input type="text" name="ingredients[0][quantity]" class="form-control heroui-input" placeholder="Số lượng (VD: 500)" style="flex: 1.2;">
+                                        <div class="heroui-stepper" style="flex: 1.6;">
+                                            <button type="button" class="heroui-stepper-btn btn-step-down" title="Giảm định lượng">−</button>
+                                            <input type="text" name="ingredients[0][quantity]" class="form-control heroui-input ing-qty-input" placeholder="Số lượng" value="100">
+                                            <button type="button" class="heroui-stepper-btn btn-step-up" title="Tăng định lượng">+</button>
+                                        </div>
                                         <input type="text" name="ingredients[0][unit]" class="form-control heroui-input" placeholder="Đơn vị (g, ml)" style="flex: 1;">
                                         <button type="button" class="btn btn-sm btn-link text-danger p-1 btn-remove-ing" title="Xóa"><i class="fa-solid fa-trash-can"></i></button>
                                     </div>
@@ -332,7 +336,7 @@ $categories = $pdo->query("SELECT * FROM categories")->fetchAll();
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // JS Thêm / Xóa nguyên liệu động
+        // JS Thêm / Xóa / Tăng giảm định lượng nguyên liệu
         let ingredientIndex = 1;
         document.getElementById('btnAddIngredient').addEventListener('click', function() {
             const container = document.getElementById('ingredientsList');
@@ -340,16 +344,32 @@ $categories = $pdo->query("SELECT * FROM categories")->fetchAll();
             row.className = 'ingredient-row d-flex align-items-center gap-2';
             row.innerHTML = `
                 <input type="text" name="ingredients[${ingredientIndex}][name]" class="form-control heroui-input" placeholder="Tên nguyên liệu" style="flex: 2;">
-                <input type="text" name="ingredients[${ingredientIndex}][quantity]" class="form-control heroui-input" placeholder="Số lượng" style="flex: 1.2;">
+                <div class="heroui-stepper" style="flex: 1.6;">
+                    <button type="button" class="heroui-stepper-btn btn-step-down" title="Giảm định lượng">−</button>
+                    <input type="text" name="ingredients[${ingredientIndex}][quantity]" class="form-control heroui-input ing-qty-input" placeholder="Số lượng" value="100">
+                    <button type="button" class="heroui-stepper-btn btn-step-up" title="Tăng định lượng">+</button>
+                </div>
                 <input type="text" name="ingredients[${ingredientIndex}][unit]" class="form-control heroui-input" placeholder="Đơn vị" style="flex: 1;">
                 <button type="button" class="btn btn-sm btn-link text-danger p-1 btn-remove-ing" title="Xóa"><i class="fa-solid fa-trash-can"></i></button>
             `;
             container.appendChild(row);
             ingredientIndex++;
-            attachRemoveEvents();
+            attachIngredientEvents();
         });
 
-        function attachRemoveEvents() {
+        function adjustQuantity(input, delta) {
+            let val = parseFloat(input.value);
+            if (isNaN(val)) {
+                val = 0;
+            }
+            let step = (val >= 100) ? 50 : ((val >= 10) ? 5 : 1);
+            let newVal = val + (delta * step);
+            if (newVal < 0) newVal = 0;
+            input.value = newVal;
+        }
+
+        function attachIngredientEvents() {
+            // Nút xóa
             document.querySelectorAll('.btn-remove-ing').forEach(btn => {
                 btn.onclick = function() {
                     if (document.querySelectorAll('.ingredient-row').length > 1) {
@@ -361,8 +381,24 @@ $categories = $pdo->query("SELECT * FROM categories")->fetchAll();
                     }
                 };
             });
+
+            // Nút tăng định lượng (+)
+            document.querySelectorAll('.btn-step-up').forEach(btn => {
+                btn.onclick = function() {
+                    const input = this.closest('.heroui-stepper').querySelector('.ing-qty-input');
+                    adjustQuantity(input, 1);
+                };
+            });
+
+            // Nút giảm định lượng (-)
+            document.querySelectorAll('.btn-step-down').forEach(btn => {
+                btn.onclick = function() {
+                    const input = this.closest('.heroui-stepper').querySelector('.ing-qty-input');
+                    adjustQuantity(input, -1);
+                };
+            });
         }
-        attachRemoveEvents();
+        attachIngredientEvents();
     </script>
 </body>
 </html>
