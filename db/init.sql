@@ -97,6 +97,38 @@ INSERT INTO `recipe_ingredients` VALUES (1,1,'1','kg'),(1,2,'500','g'),(1,3,'300
 UNLOCK TABLES;
 
 --
+-- Table structure for table `recipe_nutrition`
+--
+
+DROP TABLE IF EXISTS `recipe_nutrition`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `recipe_nutrition` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `recipe_id` int NOT NULL,
+  `calories` int NOT NULL DEFAULT '0',
+  `protein` decimal(5,1) NOT NULL DEFAULT '0.0',
+  `fat` decimal(5,1) NOT NULL DEFAULT '0.0',
+  `carbs` decimal(5,1) NOT NULL DEFAULT '0.0',
+  `fiber` decimal(5,1) NOT NULL DEFAULT '0.0',
+  `sodium` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `recipe_id` (`recipe_id`),
+  CONSTRAINT `fk_recipe_nutrition_recipe` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `recipe_nutrition`
+--
+
+LOCK TABLES `recipe_nutrition` WRITE;
+/*!40000 ALTER TABLE `recipe_nutrition` DISABLE KEYS */;
+INSERT INTO `recipe_nutrition` VALUES (1,1,450,28.5,12.0,58.0,3.2,980),(2,2,580,32.0,22.5,64.0,4.0,860),(3,3,180,22.0,4.2,14.5,3.1,620),(4,4,140,10.5,2.5,19.0,2.0,280),(5,5,290,6.2,14.0,35.0,1.2,65),(6,6,280,18.0,16.5,16.0,3.5,720),(7,7,340,3.0,9.0,62.0,0.5,95),(8,8,680,38.0,26.0,74.0,3.0,920),(9,9,160,12.0,6.0,15.0,3.0,480),(10,10,420,18.5,20.0,42.0,3.2,560),(11,11,210,4.0,3.0,44.0,2.5,50),(12,13,310,34.0,14.5,8.0,1.0,540),(13,14,620,36.5,22.0,68.0,4.2,1150),(14,15,550,26.0,18.5,72.0,5.0,680),(15,16,320,35.0,16.0,8.5,4.0,420),(16,17,590,28.0,28.5,56.0,3.0,890),(17,18,510,20.5,18.0,66.0,3.0,740),(18,19,540,28.0,36.0,24.0,1.0,820),(19,20,650,34.5,28.0,65.0,2.0,780),(20,21,460,28.0,12.5,60.0,4.5,690),(21,22,580,44.0,34.0,24.0,3.0,620),(22,23,380,16.5,12.0,52.0,2.2,640),(23,24,380,36.0,22.5,6.0,3.5,390),(24,25,260,16.0,18.0,6.5,1.0,360);
+/*!40000 ALTER TABLE `recipe_nutrition` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `recipe_reviews`
 --
 
@@ -202,4 +234,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-10-17 11:06:35
+-- Dump completed on 2026-10-17 11:15:47

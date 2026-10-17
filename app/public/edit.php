@@ -90,6 +90,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         }
     }
     
+    // Cập nhật thông số dinh dưỡng
+    $calories = isset($_POST['calories']) ? (int)$_POST['calories'] : 0;
+    $protein = isset($_POST['protein']) ? (float)$_POST['protein'] : 0.0;
+    $fat = isset($_POST['fat']) ? (float)$_POST['fat'] : 0.0;
+    $carbs = isset($_POST['carbs']) ? (float)$_POST['carbs'] : 0.0;
+    $fiber = isset($_POST['fiber']) ? (float)$_POST['fiber'] : 0.0;
+    $sodium = isset($_POST['sodium']) ? (int)$_POST['sodium'] : 0;
+
+    $stmtNutr = $pdo->prepare("
+        INSERT INTO recipe_nutrition (recipe_id, calories, protein, fat, carbs, fiber, sodium)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+            calories = VALUES(calories),
+            protein = VALUES(protein),
+            fat = VALUES(fat),
+            carbs = VALUES(carbs),
+            fiber = VALUES(fiber),
+            sodium = VALUES(sodium)
+    ");
+    $stmtNutr->execute([$id, $calories, $protein, $fat, $carbs, $fiber, $sodium]);
+    
     app_log('INFO', "Admin updated recipe ID: $id ($title)");
     header('Location: admin.php?msg=updated');
     exit;
@@ -99,6 +120,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 $stmtIng = $pdo->prepare("SELECT i.name, ri.quantity, ri.unit FROM recipe_ingredients ri JOIN ingredients i ON ri.ingredient_id = i.id WHERE ri.recipe_id = ?");
 $stmtIng->execute([$id]);
 $currentIngredients = $stmtIng->fetchAll();
+
+// Lấy thông số dinh dưỡng hiện tại
+$stmtNutrFetch = $pdo->prepare("SELECT * FROM recipe_nutrition WHERE recipe_id = ?");
+$stmtNutrFetch->execute([$id]);
+$nutrition = $stmtNutrFetch->fetch() ?: [
+    'calories' => 0,
+    'protein' => 0.0,
+    'fat' => 0.0,
+    'carbs' => 0.0,
+    'fiber' => 0.0,
+    'sodium' => 0
+];
 
 $categories = $pdo->query("SELECT * FROM categories")->fetchAll();
 ?>
@@ -283,6 +316,63 @@ $categories = $pdo->query("SELECT * FROM categories")->fetchAll();
                     <div class="heroui-input-group mb-3">
                         <label class="heroui-label">Mô tả ngắn <span class="text-danger">*</span></label>
                         <textarea name="description" class="form-control heroui-input" rows="2" required><?= htmlspecialchars($recipe['description']) ?></textarea>
+                    </div>
+
+                    <!-- KHỐI QUẢN LÝ THÔNG SỐ DINH DƯỠNG (NUTRITIONAL INFORMATION) -->
+                    <div class="mb-4 p-3 rounded-4" style="background: var(--content2); border: 1px solid var(--border-color);">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <label class="heroui-label m-0">
+                                    <i class="fa-solid fa-heart-pulse text-danger me-1"></i> Bảng thông số Dinh dưỡng (Ước tính / 1 khẩu phần)
+                                </label>
+                                <small class="text-muted d-block">Giúp người dùng nắm bắt lượng calo và cân đối dinh dưỡng bữa ăn</small>
+                            </div>
+                            <span class="badge bg-light text-secondary border rounded-pill px-3 py-1">HeroUI Nutrition</span>
+                        </div>
+                        <div class="row g-2 mt-1">
+                            <div class="col-md-4 col-6">
+                                <label class="small text-muted mb-1">Năng lượng (Calo)</label>
+                                <div class="input-group">
+                                    <input type="number" name="calories" class="form-control heroui-input" value="<?= htmlspecialchars($nutrition['calories']) ?>" min="0" step="1">
+                                    <span class="input-group-text bg-white border-start-0 text-muted small">kcal</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-6">
+                                <label class="small text-muted mb-1">Chất đạm (Protein)</label>
+                                <div class="input-group">
+                                    <input type="number" name="protein" class="form-control heroui-input" value="<?= htmlspecialchars($nutrition['protein']) ?>" min="0" step="0.1">
+                                    <span class="input-group-text bg-white border-start-0 text-muted small">g</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-6">
+                                <label class="small text-muted mb-1">Chất béo (Lipid / Fat)</label>
+                                <div class="input-group">
+                                    <input type="number" name="fat" class="form-control heroui-input" value="<?= htmlspecialchars($nutrition['fat']) ?>" min="0" step="0.1">
+                                    <span class="input-group-text bg-white border-start-0 text-muted small">g</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-6">
+                                <label class="small text-muted mb-1">Tinh bột (Carbs)</label>
+                                <div class="input-group">
+                                    <input type="number" name="carbs" class="form-control heroui-input" value="<?= htmlspecialchars($nutrition['carbs']) ?>" min="0" step="0.1">
+                                    <span class="input-group-text bg-white border-start-0 text-muted small">g</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-6">
+                                <label class="small text-muted mb-1">Chất xơ (Dietary Fiber)</label>
+                                <div class="input-group">
+                                    <input type="number" name="fiber" class="form-control heroui-input" value="<?= htmlspecialchars($nutrition['fiber']) ?>" min="0" step="0.1">
+                                    <span class="input-group-text bg-white border-start-0 text-muted small">g</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-6">
+                                <label class="small text-muted mb-1">Natri (Sodium)</label>
+                                <div class="input-group">
+                                    <input type="number" name="sodium" class="form-control heroui-input" value="<?= htmlspecialchars($nutrition['sodium']) ?>" min="0" step="1">
+                                    <span class="input-group-text bg-white border-start-0 text-muted small">mg</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="heroui-input-group mb-4">
