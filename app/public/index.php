@@ -45,8 +45,16 @@ $totalRecipes = $stmtCount->fetchColumn();
 $totalPages = ceil($totalRecipes / $limit);
 
 // Fetch recipes with rating
-$sql = "SELECT r.*, c.name as category_name FROM recipes r 
+$sql = "SELECT r.*, c.name as category_name,
+               COALESCE(rev.avg_rating, r.rating, 5.0) as dynamic_rating,
+               COALESCE(rev.review_count, r.rating_count, 0) as dynamic_rating_count
+        FROM recipes r 
         LEFT JOIN categories c ON r.category_id = c.id 
+        LEFT JOIN (
+            SELECT recipe_id, ROUND(AVG(rating), 1) as avg_rating, COUNT(*) as review_count
+            FROM recipe_reviews
+            GROUP BY recipe_id
+        ) rev ON r.id = rev.recipe_id
         $whereSql 
         ORDER BY r.created_at DESC LIMIT $limit OFFSET $offset";
 $stmt = $pdo->prepare($sql);
@@ -263,8 +271,8 @@ $visualCategories = [
             <?php if(count($recipes) > 0): ?>
                 <?php foreach($recipes as $recipe): ?>
                     <?php 
-                    $score = !empty($recipe['rating']) ? (float)$recipe['rating'] : round(4.5 + (($recipe['id'] * 7) % 6) * 0.1, 1);
-                    $reviews = !empty($recipe['rating_count']) ? (int)$recipe['rating_count'] : (int)($recipe['id'] * 23 + 47);
+                    $score = !empty($recipe['dynamic_rating']) ? (float)$recipe['dynamic_rating'] : (!empty($recipe['rating']) ? (float)$recipe['rating'] : 5.0);
+                    $reviews = !empty($recipe['dynamic_rating_count']) ? (int)$recipe['dynamic_rating_count'] : (!empty($recipe['rating_count']) ? (int)$recipe['rating_count'] : 0);
                     ?>
                     <div class="col-md-6 col-lg-4">
                         <a href="recipe.php?id=<?= $recipe['id'] ?>" class="text-decoration-none">

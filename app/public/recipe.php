@@ -21,16 +21,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $stmtInsRev = $pdo->prepare("INSERT INTO recipe_reviews (recipe_id, user_name, rating, comment) VALUES (?, ?, ?, ?)");
     $stmtInsRev->execute([$id, $userName, $ratingVal, $comment]);
 
-    // Lấy thông tin hiện tại để tính toán lại điểm trung bình
-    $stmtCur = $pdo->prepare("SELECT rating, rating_count FROM recipes WHERE id = ?");
-    $stmtCur->execute([$id]);
-    $curData = $stmtCur->fetch();
+    // Tính toán lại điểm món = trung bình cộng các sao mà cộng đồng đánh giá
+    $stmtAgg = $pdo->prepare("SELECT ROUND(AVG(rating), 1) as avg_rating, COUNT(*) as total_reviews FROM recipe_reviews WHERE recipe_id = ?");
+    $stmtAgg->execute([$id]);
+    $aggData = $stmtAgg->fetch();
     
-    $oldRating = !empty($curData['rating']) ? (float)$curData['rating'] : 4.8;
-    $oldCount = !empty($curData['rating_count']) ? (int)$curData['rating_count'] : 100;
-    
-    $newCount = $oldCount + 1;
-    $newRating = round((($oldRating * $oldCount) + $ratingVal) / $newCount, 1);
+    $newRating = !empty($aggData['avg_rating']) ? (float)$aggData['avg_rating'] : (float)$ratingVal;
+    $newCount = !empty($aggData['total_reviews']) ? (int)$aggData['total_reviews'] : 1;
 
     $stmtUpd = $pdo->prepare("UPDATE recipes SET rating = ?, rating_count = ? WHERE id = ?");
     $stmtUpd->execute([$newRating, $newCount, $id]);
@@ -45,8 +42,17 @@ if (!empty($_SESSION['flash_rating'])) {
     unset($_SESSION['flash_rating']);
 }
 
-// Lấy thông tin công thức
-$stmt = $pdo->prepare("SELECT r.*, c.name as category_name FROM recipes r LEFT JOIN categories c ON r.category_id = c.id WHERE r.id = ?");
+// Lấy thông tin công thức cùng điểm trung bình cộng thực tế từ bảng đánh giá cộng đồng
+$stmt = $pdo->prepare("
+    SELECT r.*, c.name as category_name,
+           ROUND(AVG(rv.rating), 1) as avg_rating,
+           COUNT(rv.id) as review_count
+    FROM recipes r 
+    LEFT JOIN categories c ON r.category_id = c.id 
+    LEFT JOIN recipe_reviews rv ON r.id = rv.recipe_id
+    WHERE r.id = ?
+    GROUP BY r.id
+");
 $stmt->execute([$id]);
 $recipe = $stmt->fetch();
 
@@ -108,8 +114,8 @@ $reviewsList = $stmtReviews->fetchAll();
                 </div>
                 <div class="col-lg-6 px-lg-4">
                     <?php 
-                    $score = !empty($recipe['rating']) ? (float)$recipe['rating'] : round(4.5 + (($recipe['id'] * 7) % 6) * 0.1, 1);
-                    $reviews = !empty($recipe['rating_count']) ? (int)$recipe['rating_count'] : (int)($recipe['id'] * 23 + 47);
+                    $score = !empty($recipe['avg_rating']) ? (float)$recipe['avg_rating'] : (!empty($recipe['rating']) ? (float)$recipe['rating'] : 5.0);
+                    $reviews = !empty($recipe['review_count']) ? (int)$recipe['review_count'] : (!empty($recipe['rating_count']) ? (int)$recipe['rating_count'] : 0);
                     ?>
                     <div class="d-flex align-items-center gap-2 mb-3">
                         <span class="badge-category m-0"><?= htmlspecialchars($recipe['category_name'] ?? 'Món chính') ?></span>
@@ -245,7 +251,17 @@ $reviewsList = $stmtReviews->fetchAll();
                         <div class="text-end">
                             <div class="display-6 fw-bold text-dark m-0"><?= number_format($score, 1) ?><span class="fs-5 text-muted">/5</span></div>
                             <div class="text-warning small">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                                <?php 
+                                for ($s = 1; $s <= 5; $s++) {
+                                    if ($score >= $s) {
+                                        echo '<i class="fa-solid fa-star"></i>';
+                                    } elseif ($score >= ($s - 0.5)) {
+                                        echo '<i class="fa-solid fa-star-half-stroke"></i>';
+                                    } else {
+                                        echo '<i class="fa-regular fa-star"></i>';
+                                    }
+                                }
+                                ?>
                             </div>
                         </div>
                     </div>
