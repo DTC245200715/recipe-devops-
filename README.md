@@ -35,7 +35,7 @@ recipe-devops/
 │   │   ├── edit.php                    # Thêm/sửa công thức, nguyên liệu động & dinh dưỡng
 │   │   ├── logout.php                  # Đăng xuất
 │   │   ├── health.php                  # API kiểm tra sức khỏe
-│   │   ├── uploads/                    # Ảnh thành phẩm món ăn mẫu
+│   │   ├── uploads/                    # Thư mục lưu ảnh tải lên runtime (.gitkeep, binary không lưu trên Git)
 │   │   └── css/
 │   │       └── style.css               # Giao diện website chuẩn HeroUI
 │   └── src/

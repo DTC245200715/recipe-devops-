@@ -5,15 +5,10 @@
 *.key
 !nginx/certs/selfsigned.key
 
-# Runtime & Uploads (keep initial sample dish assets)
+# Runtime & Uploads (runtime data and user uploads are ignored, directory preserved via .gitkeep)
 db/data/
 app/public/uploads/*
-!app/public/uploads/banh-cuon-cha-que.jpg
-!app/public/uploads/banh-mi-chao.jpg
-!app/public/uploads/che-khuc-bach.jpg
-!app/public/uploads/mi-y-sot-bo-bam.jpg
-!app/public/uploads/thit-kho-tau.jpg
-!app/public/uploads/trung-cuon.jpg
+!app/public/uploads/.gitkeep
 
 # Temporary & Cache files
 *.tmp
