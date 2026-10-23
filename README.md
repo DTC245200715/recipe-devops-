@@ -48,7 +48,11 @@ recipe-devops/
 │   └── BAO_CAO_THUC_HANH_CHI_TIET.md
 │
 ├── screenshots/                        # Ảnh chụp màn hình minh chứng hệ thống
-│   └── .gitkeep
+│   ├── 01_website_home.png             # Giao diện trang chủ website HTTPS
+│   ├── 02_admin_dashboard.png          # Bảng điều khiển quản trị & DevOps Hub
+│   ├── 03_grafana_truy_van.png         # Dashboard TRUY VẤN trên Grafana
+│   ├── 04_phpmyadmin.png               # Quản trị CSDL recipe_db trên phpMyAdmin
+│   └── 05_prometheus_targets.png       # Trạng thái 5/5 Targets UP trên Prometheus
 │
 ├── grafana/                            # Cấu hình Grafana
 │   ├── dashboards/                     # Dashboards giám sát
@@ -110,14 +114,13 @@ docker compose ps
 
 - Website: https://localhost
 - Website (HTTP redirect): http://localhost
-- Admin: https://localhost/admin.php
+- Admin: https://localhost/admin.php (Tích hợp sẵn 3 nút điều hướng DevOps tới Grafana, Prometheus, phpMyAdmin)
   - Username: `thang`
   - Password: `thang123`
 - phpMyAdmin: http://localhost:8080
   - Host: `db`
-  - User: `thang` hoặc `recipe_user`
-  - Password: `thang-dtc245200715` hoặc lưu trong `.env`
-- Prometheus: http://localhost:9090
+  - User: `thang` (Pass: `thang-dtc245200715`) hoặc `root` (Pass: `root_secret`)
+- Prometheus: http://localhost:9090 (Không cần mật khẩu)
 - Grafana: http://localhost:3000
   - User: `thang`
   - Password: `thang-dtc245200715`
@@ -126,13 +129,14 @@ docker compose ps
 
 ## 5. Hardening và bảo mật
 
-- Container PHP chạy với user non-root (`appuser`)
-- Backend network là `internal`, chỉ các service cần thiết mới truy cập vào DB và app
-- Nginx bật HTTPS với chứng chỉ self-signed và các security headers:
-  - X-Frame-Options
-  - X-Content-Type-Options
-  - Referrer-Policy
-  - Content-Security-Policy
+- Container PHP chạy với user non-root (`appuser`, UID 1000)
+- Backend network cấu hình `internal: true`, không publish port DB 3306 ra ngoài Host
+- Nginx bật HTTPS với chứng chỉ self-signed, ẩn số hiệu phiên bản (`server_tokens off;`) và đầy đủ security headers:
+  - Strict-Transport-Security (HSTS)
+  - X-Frame-Options (SAMEORIGIN)
+  - X-Content-Type-Options (nosniff)
+  - Referrer-Policy (strict-origin-when-cross-origin)
+  - Content-Security-Policy (CSP)
   - Permissions-Policy
 - Tắt `server_tokens` và giới hạn quyền trong cấu hình Nginx
 - Dùng password mạnh cho DB, Grafana và MySQL exporter
