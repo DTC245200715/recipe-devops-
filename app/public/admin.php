@@ -122,6 +122,26 @@ $categories = $pdo->query("SELECT * FROM categories")->fetchAll();
                 </div>
                 <span class="fw-bold tracking-tight">Bếp Ngon</span>
             </a>
+
+            <!-- Quick DevOps Navigation Links -->
+            <div class="d-none d-lg-flex align-items-center gap-2 me-auto ms-4">
+                <a href="http://localhost:3000" target="_blank" rel="noopener noreferrer" class="heroui-devops-nav-link text-decoration-none" title="Mở Grafana Dashboard (Port 3000)">
+                    <i class="fa-solid fa-chart-line" style="color: #F46800;"></i>
+                    <span>Grafana</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-muted" style="font-size: 0.7rem;"></i>
+                </a>
+                <a href="http://localhost:9090" target="_blank" rel="noopener noreferrer" class="heroui-devops-nav-link text-decoration-none" title="Mở Prometheus Targets & Metrics (Port 9090)">
+                    <i class="fa-solid fa-fire-flame-curved" style="color: #E6522C;"></i>
+                    <span>Prometheus</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-muted" style="font-size: 0.7rem;"></i>
+                </a>
+                <a href="http://localhost:8080" target="_blank" rel="noopener noreferrer" class="heroui-devops-nav-link text-decoration-none" title="Mở phpMyAdmin Quản trị Database (Port 8080)">
+                    <i class="fa-solid fa-database" style="color: #006FEE;"></i>
+                    <span>phpMyAdmin</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-muted" style="font-size: 0.7rem;"></i>
+                </a>
+            </div>
+
             <div class="d-flex align-items-center gap-3">
                 <div class="d-flex align-items-center gap-2 bg-light px-3 py-1 rounded-pill border">
                     <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px;">
@@ -154,6 +174,84 @@ $categories = $pdo->query("SELECT * FROM categories")->fetchAll();
                 <span class="fw-medium">Thao tác thành công! Dữ liệu đã được cập nhật đồng bộ vào hệ thống.</span>
             </div>
         <?php endif; ?>
+
+        <!-- Tiện ích DevOps & Giám sát hệ thống -->
+        <div class="mb-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="devops-pulse-dot"></span>
+                    <h6 class="fw-bold m-0 text-secondary" style="font-size: 0.825rem; text-transform: uppercase; letter-spacing: 0.05em;">Hạ tầng DevOps & Giám sát hệ thống</h6>
+                </div>
+                <small class="text-muted d-none d-sm-inline">Docker Compose Stack • All Services Healthy</small>
+            </div>
+            <div class="row g-3">
+                <!-- Grafana -->
+                <div class="col-md-4">
+                    <div class="devops-card devops-card-grafana">
+                        <div>
+                            <div class="d-flex align-items-start justify-content-between mb-3">
+                                <div class="devops-icon-wrapper" style="background: rgba(244, 104, 0, 0.12); color: #F46800;">
+                                    <i class="fa-solid fa-chart-line"></i>
+                                </div>
+                                <span class="heroui-badge heroui-badge-warning" style="font-size: 0.75rem;">
+                                    <i class="fa-solid fa-signal"></i> Port 3000
+                                </span>
+                            </div>
+                            <h5 class="fw-bold mb-1" style="color: var(--text-main);">Grafana Dashboard</h5>
+                            <p class="text-muted small mb-3">Giám sát trực quan CPU, RAM, lưu lượng HTTP Nginx và tốc độ truy vấn MySQL theo thời gian thực.</p>
+                        </div>
+                        <a href="http://localhost:3000" target="_blank" rel="noopener noreferrer" class="btn w-100 fw-semibold d-flex align-items-center justify-content-center gap-2 rounded-3 text-white shadow-sm" style="background: #F46800; padding: 9px 16px; font-size: 0.875rem;">
+                            <span>Mở Grafana</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square small"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Prometheus -->
+                <div class="col-md-4">
+                    <div class="devops-card devops-card-prometheus">
+                        <div>
+                            <div class="d-flex align-items-start justify-content-between mb-3">
+                                <div class="devops-icon-wrapper" style="background: rgba(230, 82, 44, 0.12); color: #E6522C;">
+                                    <i class="fa-solid fa-fire-flame-curved"></i>
+                                </div>
+                                <span class="heroui-badge heroui-badge-danger" style="font-size: 0.75rem;">
+                                    <i class="fa-solid fa-heart-pulse"></i> Port 9090
+                                </span>
+                            </div>
+                            <h5 class="fw-bold mb-1" style="color: var(--text-main);">Prometheus Metrics</h5>
+                            <p class="text-muted small mb-3">Thu thập và lưu trữ time-series metrics từ 5 exporters (cAdvisor, Node, MySQL, Nginx, Loki).</p>
+                        </div>
+                        <a href="http://localhost:9090" target="_blank" rel="noopener noreferrer" class="btn w-100 fw-semibold d-flex align-items-center justify-content-center gap-2 rounded-3 text-white shadow-sm" style="background: #E6522C; padding: 9px 16px; font-size: 0.875rem;">
+                            <span>Mở Prometheus</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square small"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- phpMyAdmin -->
+                <div class="col-md-4">
+                    <div class="devops-card devops-card-phpmyadmin">
+                        <div>
+                            <div class="d-flex align-items-start justify-content-between mb-3">
+                                <div class="devops-icon-wrapper" style="background: rgba(0, 111, 238, 0.12); color: #006FEE;">
+                                    <i class="fa-solid fa-database"></i>
+                                </div>
+                                <span class="heroui-badge heroui-badge-primary" style="font-size: 0.75rem;">
+                                    <i class="fa-solid fa-server"></i> Port 8080
+                                </span>
+                            </div>
+                            <h5 class="fw-bold mb-1" style="color: var(--text-main);">phpMyAdmin</h5>
+                            <p class="text-muted small mb-3">Giao diện đồ họa quản trị MySQL, quản lý bảng, truy vấn SQL và cấu trúc database <code>recipe_db</code>.</p>
+                        </div>
+                        <a href="http://localhost:8080" target="_blank" rel="noopener noreferrer" class="btn w-100 fw-semibold d-flex align-items-center justify-content-center gap-2 rounded-3 text-white shadow-sm" style="background: #006FEE; padding: 9px 16px; font-size: 0.875rem;">
+                            <span>Mở phpMyAdmin</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square small"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="row g-4">
             <!-- Cột Thêm công thức mới -->
@@ -289,7 +387,7 @@ $categories = $pdo->query("SELECT * FROM categories")->fetchAll();
                                         <td class="ps-4 py-3">
                                             <div class="d-flex align-items-center gap-3">
                                                 <?php if(!empty($r['image'])): ?>
-                                                    <img src="<?= htmlspecialchars($r['image']) ?>" alt="thumb" class="avatar-preview">
+                                                    <img src="<?= htmlspecialchars($r['image']) ?>" alt="thumb" class="avatar-preview" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=200&auto=format&fit=crop';">
                                                 <?php else: ?>
                                                     <div class="avatar-preview d-flex align-items-center justify-content-center bg-light text-muted">
                                                         <i class="fa-solid fa-image"></i>

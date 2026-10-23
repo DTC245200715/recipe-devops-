@@ -155,6 +155,26 @@ $categories = $pdo->query("SELECT * FROM categories")->fetchAll();
                 </div>
                 <span class="fw-bold tracking-tight">Bếp Ngon</span>
             </a>
+
+            <!-- Quick DevOps Navigation Links -->
+            <div class="d-none d-lg-flex align-items-center gap-2 me-auto ms-4">
+                <a href="http://localhost:3000" target="_blank" rel="noopener noreferrer" class="heroui-devops-nav-link text-decoration-none" title="Mở Grafana Dashboard (Port 3000)">
+                    <i class="fa-solid fa-chart-line" style="color: #F46800;"></i>
+                    <span>Grafana</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-muted" style="font-size: 0.7rem;"></i>
+                </a>
+                <a href="http://localhost:9090" target="_blank" rel="noopener noreferrer" class="heroui-devops-nav-link text-decoration-none" title="Mở Prometheus Targets & Metrics (Port 9090)">
+                    <i class="fa-solid fa-fire-flame-curved" style="color: #E6522C;"></i>
+                    <span>Prometheus</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-muted" style="font-size: 0.7rem;"></i>
+                </a>
+                <a href="http://localhost:8080" target="_blank" rel="noopener noreferrer" class="heroui-devops-nav-link text-decoration-none" title="Mở phpMyAdmin Quản trị Database (Port 8080)">
+                    <i class="fa-solid fa-database" style="color: #006FEE;"></i>
+                    <span>phpMyAdmin</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-muted" style="font-size: 0.7rem;"></i>
+                </a>
+            </div>
+
             <div class="d-flex align-items-center gap-3">
                 <span class="small fw-semibold text-secondary d-none d-sm-inline">
                     <i class="fa-solid fa-user-shield text-primary me-1"></i> <?= htmlspecialchars($_SESSION['username']) ?>
@@ -244,7 +264,7 @@ $categories = $pdo->query("SELECT * FROM categories")->fetchAll();
                         <label class="heroui-label mb-2 d-block">Ảnh minh họa</label>
                         <div class="d-flex align-items-center gap-3 mb-3">
                             <?php if(!empty($recipe['image'])): ?>
-                                <img src="<?= htmlspecialchars($recipe['image']) ?>" alt="Thumb" class="avatar-preview shadow-sm" style="width: 80px; height: 80px;">
+                                <img src="<?= htmlspecialchars($recipe['image']) ?>" alt="Thumb" class="avatar-preview shadow-sm" style="width: 80px; height: 80px;" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=200&auto=format&fit=crop';">
                                 <div>
                                     <div class="small fw-semibold text-secondary">Ảnh hiện tại đang sử dụng</div>
                                     <small class="text-muted d-block text-truncate" style="max-width: 400px;"><?= htmlspecialchars($recipe['image']) ?></small>

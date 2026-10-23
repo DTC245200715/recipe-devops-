@@ -278,9 +278,9 @@ $visualCategories = [
                         <a href="recipe.php?id=<?= $recipe['id'] ?>" class="text-decoration-none">
                             <div class="card recipe-card">
                                 <?php if($recipe['image']): ?>
-                                    <img src="<?= htmlspecialchars($recipe['image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($recipe['title']) ?>" loading="lazy">
+                                    <img src="<?= htmlspecialchars($recipe['image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($recipe['title']) ?>" loading="lazy" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=600&auto=format&fit=crop';">
                                 <?php else: ?>
-                                    <img src="https://via.placeholder.com/400x250.png?text=Bếp+Ngon" class="card-img-top" alt="No image">
+                                    <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=600&auto=format&fit=crop" class="card-img-top" alt="Bếp Ngon">
                                 <?php endif; ?>
                                 
                                 <div class="card-body d-flex flex-column">

@@ -131,9 +131,9 @@ if ($nutrition) {
             <div class="row align-items-center">
                 <div class="col-lg-6 mb-4 mb-lg-0">
                     <?php if($recipe['image']): ?>
-                        <img src="<?= htmlspecialchars($recipe['image']) ?>" class="detail-img" alt="<?= htmlspecialchars($recipe['title']) ?>">
+                        <img src="<?= htmlspecialchars($recipe['image']) ?>" class="detail-img" alt="<?= htmlspecialchars($recipe['title']) ?>" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=800&auto=format&fit=crop';">
                     <?php else: ?>
-                        <img src="https://via.placeholder.com/600x400.png?text=Bếp+Ngon" class="detail-img" alt="No image">
+                        <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=800&auto=format&fit=crop" class="detail-img" alt="Bếp Ngon">
                     <?php endif; ?>
                 </div>
                 <div class="col-lg-6 px-lg-4">

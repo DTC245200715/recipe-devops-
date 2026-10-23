@@ -191,9 +191,8 @@ Kịch bản [db/init.sql](file:///d:/recipe-devops/db/init.sql) tự động kh
 <!-- TRANG 8: CHƯƠNG 2 (MINH CHỨNG WEBSITE) -->
 ### 2.3. Minh chứng giao diện website người dùng
 
-```
-[HÌNH 2.1: Giao diện trang chủ Website Bếp Ngon trên nền tảng HTTPS - Yêu cầu chụp rõ: URL https://localhost, biểu tượng ổ khóa bảo mật, thanh tìm kiếm, bộ lọc danh mục và danh sách các thẻ món ăn hiển thị đầy đủ hình ảnh, thời gian nấu và độ khó]
-```
+![HÌNH 2.1: Giao diện trang chủ Website Bếp Ngon trên nền tảng HTTPS](../screenshots/01_website_home.png)  
+*Hình 2.1: Giao diện trang chủ Website Bếp Ngon trên nền tảng bảo mật HTTPS (https://localhost).*
 
 ```
 [HÌNH 2.2: Giao diện chi tiết công thức món ăn (Phở Bò / Bún Bò Huế) - Yêu cầu chụp rõ: Tiêu đề món ăn, ảnh minh họa chất lượng cao, bảng định lượng nguyên liệu chi tiết và các bước hướng dẫn nấu tuần tự]
@@ -206,13 +205,11 @@ Kịch bản [db/init.sql](file:///d:/recipe-devops/db/init.sql) tự động kh
 *   **phpMyAdmin (Port 8080):** Giúp người quản trị theo dõi trực quan các bản ghi trong bảng `recipes`, kiểm tra khóa ngoại và tối ưu hóa chỉ mục.
 *   **Kiểm tra sức khỏe hệ thống ([app/public/health.php](file:///d:/recipe-devops/app/public/health.php)):** Thực hiện truy vấn trực tiếp `SELECT 1` xuống MySQL để xác thực trạng thái kết nối thực tế trước khi phản hồi JSON HTTP 200.
 
-```
-[HÌNH 2.3: Giao diện Dashboard quản trị công thức món ăn - Yêu cầu chụp rõ: URL https://localhost/admin.php, danh sách 12 công thức nấu ăn, các nút thao tác Thêm, Sửa và Xóa bài viết]
-```
+![HÌNH 2.3: Giao diện Dashboard quản trị công thức món ăn](../screenshots/02_admin_dashboard.png)  
+*Hình 2.3: Giao diện Bảng điều khiển quản trị (https://localhost/admin.php) tích hợp thanh điều hướng DevOps.*
 
-```
-[HÌNH 2.4: Giao diện quản trị CSDL phpMyAdmin - Yêu cầu chụp rõ: URL http://localhost:8080, cơ sở dữ liệu recipe_db, danh sách 12 dòng dữ liệu trong bảng recipes]
-```
+![HÌNH 2.4: Giao diện quản trị CSDL phpMyAdmin](../screenshots/04_phpmyadmin.png)  
+*Hình 2.4: Giao diện quản trị CSDL phpMyAdmin (http://localhost:8080) và cấu trúc bảng recipe_db.*
 
 \newpage
 
@@ -369,9 +366,8 @@ Prometheus cào số liệu định kỳ 15 giây từ 5 targets (`prometheus.ym
 <!-- TRANG 15: CHƯƠNG 4 (MINH CHỨNG PROMETHEUS & GRAFANA OVERVIEW) -->
 ### 4.4. Minh chứng trạng thái Targets và Dashboard tổng quan
 
-```
-[HÌNH 4.1: Trạng thái 5 Targets thu thập trên giao diện quản trị Prometheus - Yêu cầu chụp rõ: URL http://localhost:9090/targets hiển thị 5 endpoints (cadvisor, mysql, nginx, node-exporter, prometheus) đều ở trạng thái State: UP với biểu tượng màu xanh lá cây]
-```
+![HÌNH 4.1: Trạng thái 5 Targets thu thập trên giao diện quản trị Prometheus](../screenshots/05_prometheus_targets.png)  
+*Hình 4.1: Màn hình kiểm tra Targets (http://localhost:9090/targets) với đầy đủ 5/5 endpoints ở trạng thái UP.*
 
 ```
 [HÌNH 4.2: Bảng điều khiển tổng quan "Recipe System Overview" trên Grafana - Yêu cầu chụp rõ: URL http://localhost:3000, 4 biểu đồ Memory usage, CPU usage, HTTP requests per second và MySQL queries per second hiển thị các đỉnh dữ liệu đo đạc thực tế]
@@ -386,9 +382,8 @@ Dashboard "TRUY VẤN" được thiết kế chuyên biệt cho việc kiểm tr
 *   Đồng hồ đo tốc độ truy vấn MySQL QPS tức thời.
 *   Biểu đồ đường theo dõi lưu lượng yêu cầu Nginx phản hồi các đợt tải mô phỏng từ kịch bản `generate_traffic.ps1`.
 
-```
-[HÌNH 4.3: Bảng điều khiển "TRUY VẤN" trên Grafana hiển thị các Gauge Panels - Yêu cầu chụp rõ: Các đồng hồ đo hiển thị tỷ lệ phần trăm CPU hệ thống (ví dụ: 4.02%), tốc độ truy vấn MySQL (1.00 queries/sec) và biểu đồ Nginx Request Rate]
-```
+![HÌNH 4.3: Bảng điều khiển TRUY VẤN trên Grafana hiển thị các Gauge Panels](../screenshots/03_grafana_truy_van.png)  
+*Hình 4.3: Bảng điều khiển "TRUY VẤN" trên Grafana (http://localhost:3000) với các Gauge và Timeseries Panels đo lường CPU, RAM, QPS, RPS.*
 
 \newpage
 
