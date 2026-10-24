@@ -52,7 +52,9 @@ recipe-devops/
 │   ├── 02_admin_dashboard.png          # Bảng điều khiển quản trị & DevOps Hub
 │   ├── 03_grafana_truy_van.png         # Dashboard TRUY VẤN trên Grafana
 │   ├── 04_phpmyadmin.png               # Quản trị CSDL recipe_db trên phpMyAdmin
-│   └── 05_prometheus_targets.png       # Trạng thái 5/5 Targets UP trên Prometheus
+│   ├── 05_prometheus_targets.png       # Trạng thái 5/5 Targets UP trên Prometheus
+│   ├── 06_loki_logql.png               # Truy vấn LogQL nhật ký tập trung trên Loki
+│   └── 07_nginx_security_headers.png   # Kiểm tra chuyển hướng 301 & Security Headers
 │
 ├── grafana/                            # Cấu hình Grafana
 │   ├── dashboards/                     # Dashboards giám sát

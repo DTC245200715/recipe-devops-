@@ -244,13 +244,8 @@ add_header Content-Security-Policy "default-src 'self' 'unsafe-inline' 'unsafe-e
 <!-- TRANG 11: CHƯƠNG 3 (MINH CHỨNG HTTPS & HEADERS) -->
 ### 3.4. Minh chứng kiểm thử chuyển hướng HTTP và Security Headers
 
-```
-[HÌNH 3.1: Kiểm thử cơ chế chuyển hướng HTTP sang HTTPS bằng cURL - Yêu cầu chụp rõ: Lệnh curl.exe -I http://localhost:8000 hiển thị mã trạng thái HTTP/1.1 301 Moved Permanently cùng tiêu đề Location: https://localhost/]
-```
-
-```
-[HÌNH 3.2: Kiểm tra các Security Headers bằng cURL - Yêu cầu chụp rõ: Lệnh curl.exe -k -I https://localhost trả về mã trạng thái HTTP/1.1 200 OK và hiển thị đầy đủ 4 tiêu đề X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Content-Security-Policy]
-```
+![HÌNH 3.1 & 3.2: Kiểm thử cơ chế chuyển hướng HTTP sang HTTPS và các Security Headers](../screenshots/07_nginx_security_headers.png)  
+*Hình 3.1 & 3.2: Kết quả cURL kiểm tra chuyển hướng HTTP 301 sang HTTPS, giấu phiên bản máy chủ (server_tokens off) và nạp đầy đủ các Security Headers.*
 
 \newpage
 
@@ -413,15 +408,10 @@ Dashboard "TRUY VẤN" được thiết kế chuyên biệt cho việc kiểm tr
 \newpage
 
 <!-- TRANG 18: CHƯƠNG 4 (MINH CHỨNG LOGQL) -->
-### 4.7. Minh chứng thực thi 4 câu truy vấn LogQL trên Grafana Explore
+### 4.7. Minh chứng thực thi các câu truy vấn LogQL trên Grafana Explore
 
-```
-[HÌNH 4.4: Kết quả thực thi LogQL Truy vấn 1 & Truy vấn 2 trên Grafana Explore - Yêu cầu chụp rõ: Truy vấn {container="recipe_web"} hiển thị log PHP và truy vấn {container="recipe_nginx"} |= "GET" hiển thị log Access Nginx]
-```
-
-```
-[HÌNH 4.5: Kết quả thực thi LogQL Truy vấn 3 & Truy vấn 4 trên Grafana Explore - Yêu cầu chụp rõ: Truy vấn {container=~"recipe_.*"} |~ "(?i)error" bôi đỏ từ khóa lỗi và biểu đồ Graph của truy vấn rate({container="recipe_nginx"}[1m])]
-```
+![HÌNH 4.4 & 4.5: Kết quả thực thi LogQL trên Grafana Explore](../screenshots/06_loki_logql.png)  
+*Hình 4.4 & 4.5: Màn hình Grafana Explore truy vấn nhật ký tập trung từ Loki bằng ngôn ngữ LogQL.*
 
 \newpage
 
